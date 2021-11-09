@@ -33,3 +33,12 @@ para proyectos futuros.
 
 Mi nombre es Daniel Castaño soy de Medellin, soy egresado del Sena del programa de ADSI,
 ingrese a MinTic con la finalidad de ampliar conocimientos
+
+## Jhon Alejandro Yela Benavides.
+
+### presentación
+
+Ingeniero de sistemas
+Universidad de Nariño
+Vivo actualmente en el municipio de Gualmatán-Nariño
+sEntre al curso de Min-tic para mejorar mis conocimientos en programación
