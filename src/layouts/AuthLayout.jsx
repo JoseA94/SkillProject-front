@@ -1,12 +1,11 @@
-import React from 'react';
-import { Outlet } from 'react-router';
+import React from "react";
+import { Outlet } from "react-router";
 
 const AuthLayout = () => {
   return (
-    <div className='flex flex-col md:flex-row flex-no-wrap h-screen bg-gray-700'>
-      <div className='flex w-full h-full'>
-        <div className='w-full h-full  overflow-y-scroll'>
-          Layout de Autenticacion Desplegado
+    <div className="flex flex-col md:flex-row flex-no-wrap h-screen bg-dark-custom bg-gd-custom">
+      <div className="flex w-full h-full">
+        <div className="w-full h-full  overflow-y-scroll">
           <Outlet />
         </div>
       </div>
