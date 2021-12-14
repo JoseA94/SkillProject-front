@@ -70,6 +70,8 @@ h6 {
 
 .bg-dark-custom {
   background: #111827;
+}
+.bg-gd-custom {
   background: linear-gradient(117.55deg, #262626, rgba(26, 26, 26, 0.96));
 }
 .bg-selected {

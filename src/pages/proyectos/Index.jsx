@@ -24,10 +24,7 @@ const IndexProyectos = () => {
 
   if (queryData.Proyectos) {
     return (
-      <div className="p-10 flex flex-col">
-        <div className="flex w-full items-center justify-center">
-          <h1 className="text-2xl font-bold text-white">Lista de Proyectos</h1>
-        </div>
+      <div className="p-10 flex flex-col justify-center">
         {/* crear nuevo proyecto */}
         <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
           <div className="my-2 self-end">
@@ -37,7 +34,8 @@ const IndexProyectos = () => {
           </div>
         </PrivateComponent>
         {/* fin crear nuevo proyecto */}
-        <div className="md:grid md:grid-cols-2 gap-4">
+
+        <div className="grid lg:grid-cols-2 gap-4">
           {queryData.Proyectos.map((proyecto) => {
             return <AccordionProyecto key={proyecto._id} proyecto={proyecto} />;
           })}
@@ -87,7 +85,7 @@ const AccordionProyecto = ({ proyecto }) => {
       </div>
       {/* inscribirse */}
 
-      <PrivateComponent roleList={["ESTUDIANTE", "ADMINISTRADOR"]}>
+      <PrivateComponent roleList={["ESTUDIANTE"]}>
         <InscripcionProyecto
           idProyecto={proyecto._id}
           estado={proyecto.estado}
@@ -142,18 +140,6 @@ const FormEditProyecto = ({ _id }) => {
         />
         <ButtonLoading disabled={false} loading={loading} text="Confirmar" />
       </form>
-    </div>
-  );
-};
-
-const Objetivo = ({ tipo, descripcion }) => {
-  return (
-    <div className="mx-5 my-4 bg-gray-50 p-8 rounded-lg flex flex-col items-center justify-center shadow-xl">
-      <div className="text-lg font-bold">{tipo}</div>
-      <div>{descripcion}</div>
-      <PrivateComponent roleList={["ADMINISTRADOR"]}>
-        <div>Editar</div>
-      </PrivateComponent>
     </div>
   );
 };

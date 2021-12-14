@@ -27,23 +27,31 @@ const PROYECTO = gql`
     Proyecto(_id: $_id) {
       _id
       nombre
+      fechaInicio
+      fechaFin
+      presupuesto
       estado
       fase
+      lider {
+        nombre
+        apellido
+        correo
+      }
       objetivos {
+        _id
         descripcion
         tipo
       }
-      lider {
+      avances {
         _id
-        correo
-        nombre
-        apellido
-      }
-      inscripciones {
-        estado
-        estudiante {
-          _id
-        }
+        fecha
+        observaciones
+        # creadoPor {
+        #   _id
+        #   nombre
+        #   apellido
+        #   correo
+        # }
       }
     }
   }

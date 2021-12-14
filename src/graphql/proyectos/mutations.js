@@ -31,4 +31,23 @@ const CREAR_PROYECTO = gql`
   }
 `;
 
-export { EDITAR_PROYECTO, CREAR_PROYECTO };
+const EDITAR_OBJETIVO = gql`
+  mutation editarObjetivo(
+    $idProyecto: String!
+    $indexObjetivo: Int!
+    $campos: camposObjetivos!
+  ) {
+    editarObjetivo(
+      idProyecto: $idProyecto
+      indexObjetivo: $indexObjetivo
+      campos: $campos
+    ) {
+      _id
+      objetivos {
+        descripcion
+        tipo
+      }
+    }
+  }
+`;
+export { EDITAR_PROYECTO, CREAR_PROYECTO, EDITAR_OBJETIVO };
