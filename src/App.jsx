@@ -10,9 +10,6 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import Index from "pages/Index";
-import Page2 from "pages/Page2";
-import IndexCategory1 from "pages/category1/Index";
-import Category1 from "pages/category1/CategoryPage1";
 import IndexUsuarios from "pages/usuarios";
 import EditarUsuario from "pages/usuarios/editar";
 import AuthLayout from "layouts/AuthLayout";
@@ -27,6 +24,7 @@ import "styles/tabla.css";
 import NuevoProyecto from "pages/proyectos/NuevoProyecto";
 import IndexInscripciones from "pages/inscripciones";
 import PageProyecto from "pages/proyectos/Proyecto";
+import EditarPerfil from "pages/usuarios/perfil";
 // import PrivateRoute from 'components/PrivateRoute';
 
 const httpLink = createHttpLink({
@@ -87,6 +85,7 @@ function App() {
             <Routes>
               <Route path="/" element={<PrivateLayout />}>
                 <Route path="" element={<Index />} />
+                <Route path="/perfil" element={<EditarPerfil />} />
                 <Route path="/usuarios" element={<IndexUsuarios />} />
                 <Route
                   path="/usuarios/editar/:_id"
@@ -99,9 +98,6 @@ function App() {
                 />
                 <Route path="/proyectos/nuevo" element={<NuevoProyecto />} />
                 <Route path="/inscripciones" element={<IndexInscripciones />} />
-                <Route path="page2" element={<Page2 />} />
-                <Route path="category1" element={<IndexCategory1 />} />
-                <Route path="category1/page1" element={<Category1 />} />
               </Route>
               <Route path="/auth" element={<AuthLayout />}>
                 <Route path="register" element={<Register />} />
