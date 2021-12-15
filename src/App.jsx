@@ -24,7 +24,7 @@ import "styles/tabla.css";
 import NuevoProyecto from "pages/proyectos/NuevoProyecto";
 import IndexInscripciones from "pages/inscripciones";
 import PageProyecto from "pages/proyectos/Proyecto";
-import EditarPerfil from "pages/usuarios/perfil";
+import Perfil from "pages/usuarios/perfil";
 // import PrivateRoute from 'components/PrivateRoute';
 
 const httpLink = createHttpLink({
@@ -85,7 +85,7 @@ function App() {
             <Routes>
               <Route path="/" element={<PrivateLayout />}>
                 <Route path="" element={<Index />} />
-                <Route path="/perfil" element={<EditarPerfil />} />
+                <Route path="/perfil" element={<Perfil />} />
                 <Route path="/usuarios" element={<IndexUsuarios />} />
                 <Route
                   path="/usuarios/editar/:_id"
