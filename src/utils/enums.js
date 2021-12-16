@@ -20,7 +20,7 @@ const Enum_EstadoProyecto = {
   INACTIVO: "Inactivo",
 };
 
-const Enum_TipoObjetivo = {
+const Enum_TipoObjetivos = {
   GENERAL: "General",
   ESPECIFICO: "Específico",
 };
@@ -34,7 +34,7 @@ export {
   Enum_Rol,
   Enum_EstadoUsuario,
   Enum_EstadoProyecto,
-  Enum_TipoObjetivo,
+  Enum_TipoObjetivos,
   Enum_FaseProyecto,
   Enum_EstadoEstudiante,
 };

@@ -33,6 +33,7 @@ const PROYECTO = gql`
       estado
       fase
       lider {
+        _id
         nombre
         apellido
         correo
@@ -46,12 +47,12 @@ const PROYECTO = gql`
         _id
         fecha
         observaciones
-        # creadoPor {
-        #   _id
-        #   nombre
-        #   apellido
-        #   correo
-        # }
+        creadoPor {
+          _id
+          nombre
+          apellido
+          correo
+        }
       }
     }
   }

@@ -1,32 +1,28 @@
 import { gql } from "@apollo/client";
 
 const EDITAR_PROYECTO = gql`
-  mutation Mutation($_id: String!, $campos: camposProyecto!) {
+  mutation actualizarProyecto($_id: String!, $campos: camposProyecto!) {
     actualizarProyecto(_id: $_id, campos: $campos) {
       _id
+      nombre
       estado
+      fase
+      presupuesto
+      fechaInicio
+      fechaFin
     }
   }
 `;
 
 const CREAR_PROYECTO = gql`
-  mutation CrearProyecto(
-    $nombre: String!
-    $presupuesto: Float!
-    $fechaInicio: Date!
-    $fechaFin: Date!
-    $lider: String!
-    $objetivos: [crearObjetivo]
-  ) {
-    crearProyecto(
-      nombre: $nombre
-      presupuesto: $presupuesto
-      fechaInicio: $fechaInicio
-      fechaFin: $fechaFin
-      lider: $lider
-      objetivos: $objetivos
-    ) {
+  mutation CrearProyecto($campos: camposCreacionProyecto) {
+    crearProyecto(campos: $campos) {
       _id
+      nombre
+      estado
+      lider {
+        _id
+      }
     }
   }
 `;
@@ -50,4 +46,24 @@ const EDITAR_OBJETIVO = gql`
     }
   }
 `;
-export { EDITAR_PROYECTO, CREAR_PROYECTO, EDITAR_OBJETIVO };
+
+// const CREAR_OBJETIVO = gql``;
+
+// const ELIMINAR_OBJETIVO = gql``;
+
+// const CREAR_AVANCE = gql``;
+
+// const EDITAR_AVANCE = gql``;
+
+// const ELIMINAR_AVANCE = gql``;
+
+export {
+  EDITAR_PROYECTO,
+  CREAR_PROYECTO,
+  EDITAR_OBJETIVO,
+  // CREAR_OBJETIVO,
+  // ELIMINAR_OBJETIVO,
+  // CREAR_AVANCE,
+  // EDITAR_AVANCE,
+  // ELIMINAR_AVANCE,
+};
