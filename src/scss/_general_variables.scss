@@ -1,0 +1,257 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+// $icons-path: "../assets/icons/";
+// $icons-images: "../../assets/images/";
+// $image-sidebar: "../assets/images/home.svg";
+$havelock-blue: #5a99d8;
+$dark-blue: #001941;
+$green: #6fb53a;
+$dark-charcoal: #2f2f2f;
+$ligth-gray: #f5f5f5;
+$dove-gray: #707070;
+$midnight-blue: #00326f;
+$white: #fff;
+$black: #000000;
+$blue-link: #3b82f6;
+$dark-custom: rgba(17, 24, 39, 1);
+$gradient-custom: linear-gradient(117.55deg, #262626, rgba(26, 26, 26, 0.96));
+$selected: #323539;
+body {
+  font-family: "Roboto";
+}
+
+#root,
+.App {
+  height: 100vh;
+}
+
+// scroll bar
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: #9ca3af;
+  border-radius: 50px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.overflow-y-scroll {
+  overflow-y: scroll;
+}
+.close {
+  width: 0;
+  transition: all ease cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.mw {
+  &-50 {
+    max-width: 50px;
+  }
+  &-100 {
+    max-width: 100px;
+  }
+  &-200 {
+    max-width: 200px;
+  }
+  &-300 {
+    max-width: 340px;
+  }
+  &-400 {
+    max-width: 400px;
+  }
+  &-500 {
+    max-width: 500px;
+  }
+}
+
+.center {
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: bold;
+}
+.bg {
+  &-dark-custom {
+    background: $dark-custom;
+    background: $gradient-custom;
+  }
+  &-selected {
+    background: $selected !important;
+  }
+}
+.color {
+  &-gray {
+    color: $dove-gray;
+  }
+
+  &-dark-blue {
+    color: $dark-blue;
+  }
+
+  &-midnight-blue {
+    color: $midnight-blue;
+  }
+
+  &-dark-charcoal {
+    color: $dark-charcoal;
+  }
+
+  &-green {
+    color: $green;
+  }
+
+  &-white {
+    color: $white;
+  }
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+.p {
+  &-24 {
+    font-size: 24px;
+  }
+
+  &-40 {
+    font-size: 40px;
+  }
+}
+
+$baseFontSize: 16;
+// Función que convierte pixeles en rem
+@function rem($pixels, $context: $baseFontSize) {
+  @if (unitless($pixels)) {
+    $pixels: $pixels * 1px;
+  }
+  @if (unitless($context)) {
+    $context: $context * 1px;
+  }
+  @return $pixels / $context * 1rem;
+}
+
+// font sizes
+$font-12: rem(12);
+$font-13: rem(13);
+$font-14: rem(14);
+$font-16: rem(16);
+$font-17: rem(17);
+$font-18: rem(18);
+$font-20: rem(20);
+$font-21: rem(21);
+$font-24: rem(24);
+$font-28: rem(28);
+$font-30: rem(30);
+$font-32: rem(32);
+$font-34: rem(34);
+$font-35: rem(35);
+$font-36: rem(36);
+$font-39: rem(39);
+$font-40: rem(40);
+$font-42: rem(42);
+$font-50: rem(50);
+$font-55: rem(55);
+$font-64: rem(64);
+$font-100: rem(100);
+.font {
+  &-12 {
+    font-size: $font-13;
+  }
+
+  &-13 {
+    font-size: $font-13;
+  }
+
+  &-14 {
+    font-size: $font-14;
+  }
+
+  &-16 {
+    font-size: $font-16;
+  }
+
+  &-17 {
+    font-size: $font-17;
+  }
+
+  &-18 {
+    font-size: $font-18;
+  }
+
+  &-20 {
+    font-size: $font-20;
+  }
+
+  &-21 {
+    font-size: $font-21;
+  }
+
+  &-24 {
+    font-size: $font-24;
+  }
+
+  &-28 {
+    font-size: $font-28;
+  }
+
+  &-30 {
+    font-size: $font-30;
+  }
+
+  &-32 {
+    font-size: $font-32;
+  }
+
+  &-34 {
+    font-size: $font-34;
+  }
+  &-35 {
+    font-size: $font-35;
+  }
+
+  &-36 {
+    font-size: $font-36;
+  }
+
+  &-39 {
+    font-size: $font-39;
+  }
+
+  &-40 {
+    font-size: $font-40;
+  }
+
+  &-42 {
+    font-size: $font-42;
+  }
+
+  &-50 {
+    font-size: $font-50;
+  }
+
+  &-55 {
+    font-size: $font-55;
+  }
+
+  &-64 {
+    font-size: $font-64;
+  }
+
+  &-100 {
+    font-size: $font-100;
+  }
+}

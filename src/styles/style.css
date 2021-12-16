@@ -1,0 +1,176 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+body {
+  font-family: "Roboto";
+}
+
+#root,
+.App {
+  height: 100vh;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #9ca3af;
+  border-radius: 50px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.overflow-y-scroll {
+  overflow-y: scroll;
+}
+
+.close {
+  width: 0;
+  transition: all ease cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.mw-50 {
+  max-width: 50px;
+}
+.mw-100 {
+  max-width: 100px;
+}
+.mw-200 {
+  max-width: 200px;
+}
+.mw-300 {
+  max-width: 340px;
+}
+.mw-400 {
+  max-width: 400px;
+}
+.mw-500 {
+  max-width: 500px;
+}
+
+.center {
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: bold;
+}
+
+.bg-dark-custom {
+  background: #111827;
+  background: linear-gradient(117.55deg, #262626, rgba(26, 26, 26, 0.96));
+}
+.bg-selected {
+  background: #323539 !important;
+}
+
+.color-gray {
+  color: #707070;
+}
+.color-dark-blue {
+  color: #001941;
+}
+.color-midnight-blue {
+  color: #00326f;
+}
+.color-dark-charcoal {
+  color: #2f2f2f;
+}
+.color-green {
+  color: #6fb53a;
+}
+.color-white {
+  color: #fff;
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+.p-24 {
+  font-size: 24px;
+}
+.p-40 {
+  font-size: 40px;
+}
+
+.font-12 {
+  font-size: 0.8125rem;
+}
+.font-13 {
+  font-size: 0.8125rem;
+}
+.font-14 {
+  font-size: 0.875rem;
+}
+.font-16 {
+  font-size: 1rem;
+}
+.font-17 {
+  font-size: 1.0625rem;
+}
+.font-18 {
+  font-size: 1.125rem;
+}
+.font-20 {
+  font-size: 1.25rem;
+}
+.font-21 {
+  font-size: 1.3125rem;
+}
+.font-24 {
+  font-size: 1.5rem;
+}
+.font-28 {
+  font-size: 1.75rem;
+}
+.font-30 {
+  font-size: 1.875rem;
+}
+.font-32 {
+  font-size: 2rem;
+}
+.font-34 {
+  font-size: 2.125rem;
+}
+.font-35 {
+  font-size: 2.1875rem;
+}
+.font-36 {
+  font-size: 2.25rem;
+}
+.font-39 {
+  font-size: 2.4375rem;
+}
+.font-40 {
+  font-size: 2.5rem;
+}
+.font-42 {
+  font-size: 2.625rem;
+}
+.font-50 {
+  font-size: 3.125rem;
+}
+.font-55 {
+  font-size: 3.4375rem;
+}
+.font-64 {
+  font-size: 4rem;
+}
+.font-100 {
+  font-size: 6.25rem;
+}
+
+/*# sourceMappingURL=style.css.map */

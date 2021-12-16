@@ -9,6 +9,8 @@ import { toast } from 'react-toastify';
 import { EDITAR_USUARIO } from 'graphql/usuarios/mutations';
 import DropDown from 'components/Dropdown';
 import { Enum_EstadoUsuario } from 'utils/enums';
+import { Enum_EstadoEstudiante } from 'utils/enums';
+import PrivateComponent from "components/PrivateComponent";
 
 const EditarUsuario = () => {
   const { form, formData, updateFormData } = useFormData(null);
@@ -92,13 +94,24 @@ const EditarUsuario = () => {
           defaultValue={queryData.Usuario.identificacion}
           required={true}
         />
-        <DropDown
-          label='Estado de la persona:'
-          name='estado'
-          defaultValue={queryData.Usuario.estado}
-          required={true}
-          options={Enum_EstadoUsuario}
-        />
+        <PrivateComponent roleList={["ADMINISTRADOR"]}>
+          <DropDown
+            label='Estado de la persona:'
+            name='estado'
+            defaultValue={queryData.Usuario.estado}
+            required={true}
+            options={Enum_EstadoUsuario}
+          />
+        </PrivateComponent>
+        <PrivateComponent roleList={["LIDER"]}>
+          <DropDown
+            label='Estado de la persona:'
+            name='estado'
+            defaultValue={queryData.Usuario.estado}
+            required={true}
+            options={Enum_EstadoEstudiante}
+          />
+        </PrivateComponent>
         <span className='text-white'>Rol del usuario: {queryData.Usuario.rol}</span>
         <ButtonLoading
           disabled={Object.keys(formData).length === 0}
