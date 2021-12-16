@@ -28,8 +28,8 @@ import Perfil from "pages/usuarios/perfil";
 // import PrivateRoute from 'components/PrivateRoute';
 
 const httpLink = createHttpLink({
-  //uri: "https://server-js-ciclo4.herokuapp.com/graphql",
-  uri: 'http://localhost:4000/graphql',
+  uri: "https://server-js-ciclo4.herokuapp.com/graphql",
+  //uri: 'http://localhost:4000/graphql',
 });
 
 const authLink = setContext((_, { headers }) => {
