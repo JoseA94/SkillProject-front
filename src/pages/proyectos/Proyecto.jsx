@@ -155,7 +155,7 @@ const Proyecto = () => {
                 <h2 className="font-24 text-white font-bold">
                   {queryData.Proyecto.nombre}
                 </h2>
-                <PrivateComponent roleList={["ESTUDIANTE", "ADMINISTRADOR"]}>
+                <PrivateComponent roleList={["ESTUDIANTE"]}>
                   <InscripcionProyecto
                     idProyecto={queryData.Proyecto._id}
                     estado={queryData.Proyecto.estado}
