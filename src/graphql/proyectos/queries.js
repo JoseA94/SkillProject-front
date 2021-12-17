@@ -46,6 +46,7 @@ const PROYECTO = gql`
       avances {
         _id
         fecha
+        descripcion
         observaciones
         creadoPor {
           _id

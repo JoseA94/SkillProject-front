@@ -25,11 +25,15 @@ import NuevoProyecto from "pages/proyectos/NuevoProyecto";
 import IndexInscripciones from "pages/inscripciones";
 import PageProyecto from "pages/proyectos/Proyecto";
 import Perfil from "pages/usuarios/perfil";
+import IndexAvances from "pages/avances";
+import EditarObservaciones from "pages/avances/observaciones"
+import EditarDescripcion from "pages/avances/editarDescripcion";
+import CrearAvance from "pages/avances/crearAvance";
 // import PrivateRoute from 'components/PrivateRoute';
 
 const httpLink = createHttpLink({
   uri: "https://server-js-ciclo4.herokuapp.com/graphql",
-  //uri: 'http://localhost:4000/graphql',
+  // uri: 'http://localhost:4000/graphql',
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -73,7 +77,6 @@ function App() {
         identificacion: decoded.identificacion,
         correo: decoded.correo,
         rol: decoded.rol,
-        estado:decoded.estado
       });
     }
   }, [authToken]);
@@ -99,6 +102,10 @@ function App() {
                 />
                 <Route path="/proyectos/nuevo" element={<NuevoProyecto />} />
                 <Route path="/inscripciones" element={<IndexInscripciones />} />
+                <Route path="/avances" element={<IndexAvances />} />
+                <Route path="/avances/observaciones/:_id" element={<EditarObservaciones />} />
+                <Route path="/avances/descripcion/:_id" element={<EditarDescripcion />} />
+                <Route path="/avances/nuevo/:_id" element={<CrearAvance />} />
               </Route>
               <Route path="/auth" element={<AuthLayout />}>
                 <Route path="register" element={<Register />} />

@@ -56,7 +56,7 @@ const NuevoProyecto = () => {
     console.log("data mutation", mutationData);
   }, [mutationData]);
 
-  if (loading) return <div>...Loading</div>;
+  if (loading) return <div>Cargando...</div>;
 
   return (
     <div className="p-10 flex flex-col items-center">
