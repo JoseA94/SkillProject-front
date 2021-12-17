@@ -47,6 +47,7 @@ const PROYECTO = gql`
         _id
         fecha
         observaciones
+        descripcion
         creadoPor {
           _id
           nombre
