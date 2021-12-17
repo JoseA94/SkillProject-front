@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "context/authContext";
 import PrivateComponent from "./PrivateComponent";
+import PrivateSidebar from "./PrivateSidebar";
 
 const SidebarLinks = () => {
   return (
     <ul className="mt-12 ">
       <SidebarRoute to="" title="Inicio" icon="fas fa-home" />
+      <PrivateSidebar stateList={["AUTORIZADO"]}>
       <PrivateComponent roleList={["LIDER", "ESTUDIANTE"]}>
         <SidebarRoute to="/perfil" title="Perfil" icon="fas fa-user-circle" />
       </PrivateComponent>
@@ -32,6 +34,7 @@ const SidebarLinks = () => {
           icon='fas fa-book' 
           />
       </PrivateComponent>
+      </PrivateSidebar>
       <Logout />
     </ul>
   );
