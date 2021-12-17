@@ -18,10 +18,16 @@ import { AccordionStyled } from "components/Accordion";
 import { AccordionSummaryStyled } from "components/Accordion";
 import { AccordionDetailsStyled } from "components/Accordion";
 import { Enum_TipoObjetivos } from "utils/enums";
+import { EDITAR_OBSERVACIONES } from 'graphql/avances/mutations';
+import { CREAR_AVANCE } from 'graphql/avances/mutations';
+import { Dialog } from '@mui/material';
+import { PROYECTOS } from "graphql/proyectos/queries";
+
 
 const Proyecto = () => {
   const { idProyecto } = useParams();
   const { userData } = useUser();
+  const [openDialog, setOpenDialog] = useState(false);
   const { form, formData, updateFormData } = useFormData();
   const [mostrarInputs, setMostrarInputs] = useState(false);
   const [
@@ -216,6 +222,20 @@ const Proyecto = () => {
             <AccordionStyled>
               <AccordionSummaryStyled>
                 <h2>Avances</h2>
+                <PrivateComponent roleList={["ESTUDIANTE"]}>
+                  <div className="flex mx-2">
+                    <button
+                      onClick={() => setOpenDialog(true)}
+                      className='fas fa-book text-green-300 hover:text-blue-800 cursor-pointer'
+                      type='button'
+                              >                                
+                    </button>
+                    <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+                      <CrearAvance proyecto={idProyecto} setOpenDialog={setOpenDialog} />
+                                 
+                    </Dialog>
+                  </div>
+                </PrivateComponent>
               </AccordionSummaryStyled>
               <AccordionDetailsStyled>
                 {queryData.Proyecto.avances.length > 0 ? (
@@ -224,6 +244,7 @@ const Proyecto = () => {
                       <Avance
                         key={avance._id}
                         fecha={avance.fecha.slice(0, -14)}
+                        descripcion={avance.descripcion}
                         observaciones={avance.observaciones}
                         creadoPor={avance.creadoPor.nombre}
                       />
@@ -286,16 +307,15 @@ const Objetivo = ({ tipo, descripcion, idProyecto, indexObjetivo }) => {
             onSubmit={submitForm}
             className="flex flex-col items-center"
           >
+            <div className="font-bold text-lg">Descripcion Objetivo:</div>
             <Input
-              label="Descripcion Objetivo"
               type="text"
               name="descripcion"
               defaultValue={descripcion}
               required={true}
             />
-
+            <div className="font-bold text-lg">Tipo Objetivo:</div>
             <DropDown
-              label="Tipo Objetivo"
               name="tipo"
               options={Enum_TipoObjetivos}
               defaultValue={tipo}
@@ -325,25 +345,124 @@ const Objetivo = ({ tipo, descripcion, idProyecto, indexObjetivo }) => {
     </div>
   );
 };
-const Avance = ({ fecha, observaciones, creadoPor }) => {
-  const [editar, setEditar] = useState(false);
+
+const CrearAvance = ({ proyecto, setOpenDialog }) => {
+  const { userData } = useUser();
+  const { form, formData, updateFormData } = useFormData();
+
+  const [crearAvance, { loading }] = useMutation(CREAR_AVANCE, {
+    refetchQueries: [PROYECTOS],
+  });
+
+  const submitForm = (e) => {
+    e.preventDefault();
+
+    crearAvance({
+      variables: { ...formData, proyecto, creadoPor: userData._id },
+    })
+      .then(() => {
+        toast.success('avance creado con exito');
+        setOpenDialog(false);
+      })
+      .catch(() => {
+        toast.error('error creando el avance');
+      });
+  };
   return (
-    <div className="mx-5 relative text-black my-4 bg-gray-50 p-8 rounded-lg flex flex-col shadow-xl">
-      <div className="text-lg font-bold">{fecha}</div>
-      <div>{observaciones}</div>
-      <div>{creadoPor}</div>
-      <div className="absolute md:right-5 md:top-5">
-        <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
-          <i
-            className="mx-4 fas fa-pen text-yellow-600 hover:text-yellow-400"
-            onClick={() => setEditar(!editar)}
-          />
-        </PrivateComponent>
-      </div>
+    <div className='p-4'>
+      <h1 className='text-2xl font-bold text-gray-900'>Crear Nuevo Avance </h1>
+      <form ref={form} onChange={updateFormData} onSubmit={submitForm}>
+        <Input name='descripcion' label='Descripción' type='text' />
+        <Input name='fecha' label='Fecha' type='date' />
+        <ButtonLoading
+          text='Crear Avance'
+          loading={loading}
+          disabled={Object.keys(formData).length === 0}
+        />
+      </form>
     </div>
   );
 };
-const InscripcionProyecto = ({ idProyecto, estado, inscripciones }) => {
+
+const Avance = ({ _id, fecha, descripcion, observaciones, creadoPor }) => {
+  const { form, formData, updateFormData } = useFormData();
+  const [editar, setEditar] = useState(false);
+  const [editarObservaciones, { data: dataMutation, loading, error }] =
+    useMutation(EDITAR_OBSERVACIONES);
+    const submitForm = (e) => {
+      e.preventDefault();
+      editarObservaciones({
+        variables: {
+          _id,
+          descripcion: descripcion,
+          observaciones: observaciones,
+          campos: formData,
+        },
+      });
+      setEditar(false);
+    };
+  useEffect(() => {
+    console.log("data mutation", dataMutation);
+  }, [dataMutation]);
+
+  return (
+      <div className="mx-5 relative text-black my-4 bg-gray-50 p-8 rounded-lg flex flex-col shadow-xl">
+       {editar ? (
+        <>
+          <div className="absolute right-14 md:right-5 md:top-5">
+            <PrivateComponent roleList={["LIDER"]}>
+            <i
+                className="mx-4 fas fa-times text-red-600 hover:text-red-700"
+                onClick={() => setEditar(!editar)}
+              />
+            </PrivateComponent>
+          </div>
+          <form
+            ref={form}
+            onChange={updateFormData}
+            onSubmit={submitForm}
+            className="flex flex-col items-center"
+          >
+            <div className="font-bold text-lg">Editar Observaciones:</div>
+            <Input
+              type="text"
+              name="observaciones"
+              defaultValue={observaciones}
+              required={true}
+            />
+
+            <ButtonLoading
+              disabled={false}
+              loading={loading}
+              text="Confirmar"
+            />
+          </form>
+        </>
+      ) : (
+        <>
+          <div className="text-lg font-bold">Fecha: {fecha}</div>
+          <div><span className="font-bold">Descripción: </span> {descripcion} </div>
+          <div><span className="font-bold">Observaciones:  </span>{observaciones}</div>
+          <div><span className="font-bold" >Creado por: </span> {creadoPor} </div>
+          
+          <div className="absolute md:right-5 md:top-5">
+            <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+              <i
+                className="mx-4 fas fa-pen text-yellow-600 hover:text-yellow-400"
+                onClick={() => setEditar(!editar)}
+              />
+            </PrivateComponent>
+          </div>
+        </>
+      )}
+      </div>
+      
+    );
+    
+};
+
+
+  const InscripcionProyecto = ({ idProyecto, estado, inscripciones }) => {
   const [estadoInscripcion, setEstadoInscripcion] = useState("");
   const [crearInscripcion, { data, loading, error }] =
     useMutation(CREAR_INSCRIPCION);

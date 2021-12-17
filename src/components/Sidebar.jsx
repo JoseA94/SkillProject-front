@@ -2,34 +2,36 @@ import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "context/authContext";
 import PrivateComponent from "./PrivateComponent";
-import PrivateSidebar from "./PrivateSidebar";
 
 const SidebarLinks = () => {
   return (
     <ul className="mt-12 ">
       <SidebarRoute to="" title="Inicio" icon="fas fa-home" />
-      <PrivateSidebar stateList={["AUTORIZADO"]}>
-        
-        <PrivateComponent roleList={["LIDER", "ESTUDIANTE"]}>
-          <SidebarRoute to="/perfil" title="Perfil" icon="fas fa-user-circle" />
-        </PrivateComponent>
-        <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
-          <SidebarRoute to="/usuarios" title="Usuarios" icon="fas fa-user" />
-        </PrivateComponent>
+      <PrivateComponent roleList={["LIDER", "ESTUDIANTE"]}>
+        <SidebarRoute to="/perfil" title="Perfil" icon="fas fa-user-circle" />
+      </PrivateComponent>
+      <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+        <SidebarRoute to="/usuarios" title="Usuarios" icon="fas fa-user" />
+      </PrivateComponent>
+      <SidebarRoute
+        to="/proyectos"
+        title="Proyectos"
+        icon="fas fa-smile-wink"
+      />
+      <PrivateComponent roleList={["LIDER"]}>
         <SidebarRoute
-          to="/proyectos"
-          title="Proyectos"
-          icon="fas fa-smile-wink"
+          to="/inscripciones"
+          title="Aprobacion Inscripciones"
+          icon="fas fa-user"
         />
-        <PrivateComponent roleList={["LIDER"]}>
-          <SidebarRoute
-            to="/inscripciones"
-            title="Aprobacion Inscripciones"
-            icon="fas fa-user"
+      </PrivateComponent>
+      <PrivateComponent roleList={['ESTUDIANTE', 'LIDER']}>
+        <SidebarRoute 
+          to='/avances' 
+          title='Avances' 
+          icon='fas fa-book' 
           />
-        </PrivateComponent>
-        </PrivateSidebar>
-
+      </PrivateComponent>
       <Logout />
     </ul>
   );
