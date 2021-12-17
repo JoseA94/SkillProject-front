@@ -77,6 +77,7 @@ function App() {
         identificacion: decoded.identificacion,
         correo: decoded.correo,
         rol: decoded.rol,
+        estado:decoded.estado
       });
     }
   }, [authToken]);
