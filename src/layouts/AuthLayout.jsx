@@ -1,5 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AuthLayout = () => {
   return (
@@ -7,6 +9,7 @@ const AuthLayout = () => {
       <div className="flex w-full h-full">
         <div className="w-full h-full  overflow-y-scroll">
           <Outlet />
+          <ToastContainer />
         </div>
       </div>
     </div>
