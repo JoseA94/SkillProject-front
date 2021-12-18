@@ -24,8 +24,7 @@ import { nanoid } from "nanoid";
 import { CREAR_AVANCE } from "graphql/proyectos/mutations";
 import { EDITAR_DESCRIPCION } from "graphql/proyectos/mutations";
 import { EDITAR_OBSERVACIONES } from "graphql/proyectos/mutations";
-import { CustomTooltip } from "components/ToolTip";
-
+import { Tooltip } from "@mui/material";
 const Proyecto = () => {
   const { idProyecto } = useParams();
   const { userData } = useUser();
@@ -150,16 +149,14 @@ const Proyecto = () => {
             <div className="">
               {userData._id === queryData.Proyecto.lider._id &&
               queryData.Proyecto.estado === "ACTIVO" ? (
-                <CustomTooltip title="Editar Proyecto">
-                  <div className="absolute md:right-20 md:top-20">
-                    <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
-                      <i
-                        className="mx-4 fas fa-pen text-yellow-600 hover:text-yellow-400"
-                        onClick={() => setMostrarInputs(!mostrarInputs)}
-                      />
-                    </PrivateComponent>
-                  </div>
-                </CustomTooltip>
+                <div className="absolute md:right-20 md:top-20">
+                  <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+                    <i
+                      className="mx-4 fas fa-pen text-yellow-600 hover:text-yellow-400"
+                      onClick={() => setMostrarInputs(!mostrarInputs)}
+                    />
+                  </PrivateComponent>
+                </div>
               ) : (
                 ""
               )}
@@ -206,11 +203,14 @@ const Proyecto = () => {
                 <h2>Objetivos</h2>
               </AccordionSummaryStyled>
               <AccordionDetailsStyled>
-                <CustomTooltip title="Crear Objetivo">
+                {userData._id === queryData.Proyecto.lider._id &&
+                queryData.Proyecto.estado === "ACTIVO" ? (
                   <div className="">
                     <CrearObjetivo idProyecto={queryData.Proyecto._id} />
                   </div>
-                </CustomTooltip>
+                ) : (
+                  ""
+                )}
                 {queryData.Proyecto.objetivos.length > 0 ? (
                   queryData.Proyecto.objetivos.map((objetivo) => {
                     return (
@@ -223,6 +223,9 @@ const Proyecto = () => {
                         indexObjetivo={queryData.Proyecto.objetivos.indexOf(
                           objetivo
                         )}
+                        userData={userData}
+                        lider={queryData.Proyecto.lider}
+                        estadoProyecto={queryData.Proyecto.estado}
                       />
                     );
                   })
@@ -239,14 +242,12 @@ const Proyecto = () => {
                 <h2>Avances</h2>
               </AccordionSummaryStyled>
               <AccordionDetailsStyled>
-                <CustomTooltip title="Crear Avance">
-                  <div className="">
-                    <CrearAvance
-                      creadoPor={userData._id}
-                      idProyecto={queryData.Proyecto._id}
-                    />
-                  </div>
-                </CustomTooltip>
+                <div className="">
+                  <CrearAvance
+                    creadoPor={userData._id}
+                    idProyecto={queryData.Proyecto._id}
+                  />
+                </div>
                 {queryData.Proyecto.avances.length > 0 ? (
                   queryData.Proyecto.avances.map((avance) => {
                     return (
@@ -290,6 +291,9 @@ const Objetivo = ({
   idProyecto,
   indexObjetivo,
   idObjetivo,
+  userData,
+  lider,
+  estadoProyecto,
 }) => {
   const { form, formData, updateFormData } = useFormData();
   const [editar, setEditar] = useState(false);
@@ -314,16 +318,14 @@ const Objetivo = ({
     <div className="mx-5 relative text-black my-4 bg-gray-50 p-8 rounded-lg flex flex-col shadow-xl">
       {editar ? (
         <>
-          <CustomTooltip title="Cerrar">
-            <div className="absolute right-14 md:right-5 md:top-5">
-              <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
-                <i
-                  className="mx-4 fas fa-times text-red-600 hover:text-red-700"
-                  onClick={() => setEditar(!editar)}
-                />
-              </PrivateComponent>
-            </div>
-          </CustomTooltip>
+          <div className="absolute right-14 md:right-5 md:top-5">
+            <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+              <i
+                className="mx-4 fas fa-times text-red-600 hover:text-red-700"
+                onClick={() => setEditar(!editar)}
+              />
+            </PrivateComponent>
+          </div>
 
           <form
             ref={form}
@@ -356,24 +358,27 @@ const Objetivo = ({
         <>
           <div className="text-lg font-bold">{tipo}</div>
           <div>{descripcion}</div>
-          <CustomTooltip title="Editar Objetivo">
-            <div className="absolute md:right-5 md:top-5">
-              <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+          {userData._id === lider._id && estadoProyecto === "ACTIVO" ? (
+            <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+              <div className="absolute md:right-5 md:top-5">
                 <i
                   className="mx-4 fas fa-pen text-yellow-600 hover:text-yellow-400"
                   onClick={() => setEditar(!editar)}
                 />
-              </PrivateComponent>
-            </div>
-          </CustomTooltip>
-
-          <CustomTooltip title="Eliminar Objetivo">
+              </div>
+            </PrivateComponent>
+          ) : (
+            ""
+          )}
+          {userData._id === lider._id && estadoProyecto === "ACTIVO" ? (
             <EliminarObjetivo
               key={nanoid()}
               idObjetivo={idObjetivo}
               idProyecto={idProyecto}
             />
-          </CustomTooltip>
+          ) : (
+            ""
+          )}
         </>
       )}
     </div>
@@ -403,16 +408,14 @@ const CrearObjetivo = ({ idProyecto }) => {
     <div className="">
       {mostrar ? (
         <>
-          <CustomTooltip title="Cerrar">
-            <div className="absolute md:right-5 md:top-5">
-              <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
-                <i
-                  className="mx-4 fas fa-times text-red-600 hover:text-red-400"
-                  onClick={() => setMostrar(!mostrar)}
-                />
-              </PrivateComponent>
-            </div>
-          </CustomTooltip>
+          <div className="absolute md:right-5 md:top-5">
+            <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+              <i
+                className="mx-4 fas fa-times text-red-600 hover:text-red-400"
+                onClick={() => setMostrar(!mostrar)}
+              />
+            </PrivateComponent>
+          </div>
           <form
             ref={form}
             onChange={updateFormData}
@@ -524,16 +527,14 @@ const Avance = ({
     <div className="mx-5 relative text-black my-4 bg-gray-50 p-8 rounded-lg flex flex-col shadow-xl">
       {editarDesc ? (
         <>
-          <CustomTooltip title="Cerrar">
-            <div className="absolute md:right-5 md:top-5">
-              <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
-                <i
-                  className="mx-4 fas fa-times text-red-600 hover:text-red-400"
-                  onClick={() => setEditarDesc(!editarDesc)}
-                />
-              </PrivateComponent>
-            </div>
-          </CustomTooltip>
+          <div className="absolute md:right-5 md:top-5">
+            <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+              <i
+                className="mx-4 fas fa-times text-red-600 hover:text-red-400"
+                onClick={() => setEditarDesc(!editarDesc)}
+              />
+            </PrivateComponent>
+          </div>
 
           <form
             ref={form}
@@ -567,16 +568,14 @@ const Avance = ({
           <>
             <div className="">
               {userData === idUsuario ? (
-                <CustomTooltip title="Ediar Descripción">
-                  <div className="absolute md:right-10 md:top-10">
-                    <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
-                      <i
-                        className="mx-4 fas fa-pen text-yellow-600 hover:text-yellow-400"
-                        onClick={() => setEditarDesc(!editarDesc)}
-                      />
-                    </PrivateComponent>
-                  </div>
-                </CustomTooltip>
+                <div className="absolute md:right-10 md:top-10">
+                  <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+                    <i
+                      className="mx-4 fas fa-pen text-yellow-600 hover:text-yellow-400"
+                      onClick={() => setEditarDesc(!editarDesc)}
+                    />
+                  </PrivateComponent>
+                </div>
               ) : (
                 ""
               )}
@@ -590,16 +589,14 @@ const Avance = ({
       )}
       {editarObs ? (
         <>
-          <CustomTooltip title="Cerrar">
-            <div className="absolute md:right-5 md:top-5">
-              <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
-                <i
-                  className="mx-4 fas fa-times text-red-600 hover:text-red-400"
-                  onClick={() => setEditarObs(!editarObs)}
-                />
-              </PrivateComponent>
-            </div>
-          </CustomTooltip>
+          <div className="absolute md:right-5 md:top-5">
+            <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+              <i
+                className="mx-4 fas fa-times text-red-600 hover:text-red-400"
+                onClick={() => setEditarObs(!editarObs)}
+              />
+            </PrivateComponent>
+          </div>
 
           <form
             ref={form}
@@ -626,16 +623,14 @@ const Avance = ({
         </>
       ) : (
         <>
-          <CustomTooltip title="Crear o Editar Observación">
-            <div className="absolute md:right-5 md:top-5">
-              <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
-                <i
-                  className="mx-4 fas fa-pen text-yellow-600 hover:text-yellow-400"
-                  onClick={() => setEditarObs(!editarObs)}
-                />
-              </PrivateComponent>
-            </div>
-          </CustomTooltip>
+          <div className="absolute md:right-5 md:top-5">
+            <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+              <i
+                className="mx-4 fas fa-pen text-yellow-600 hover:text-yellow-400"
+                onClick={() => setEditarObs(!editarObs)}
+              />
+            </PrivateComponent>
+          </div>
         </>
       )}
     </div>
@@ -763,14 +758,12 @@ const InscripcionProyecto = ({ idProyecto, estado, inscripciones }) => {
       {estadoInscripcion !== "" ? (
         <span>{estadoInscripcion}</span>
       ) : (
-        <CustomTooltip title="Inscribirme">
-          <ButtonLoading
-            onClick={() => confirmarInscripcion()}
-            disabled={estado === "INACTIVO"}
-            loading={loading}
-            text="Inscribirme"
-          />
-        </CustomTooltip>
+        <ButtonLoading
+          onClick={() => confirmarInscripcion()}
+          disabled={estado === "INACTIVO"}
+          loading={loading}
+          text="Inscribirme"
+        />
       )}
     </>
   );
