@@ -25,6 +25,7 @@ import NuevoProyecto from "pages/proyectos/NuevoProyecto";
 import IndexInscripciones from "pages/inscripciones";
 import PageProyecto from "pages/proyectos/Proyecto";
 import Perfil from "pages/usuarios/perfil";
+import ProyectosLider from "pages/proyectos/ProyectosLider";
 // import PrivateRoute from 'components/PrivateRoute';
 
 const httpLink = createHttpLink({
@@ -73,7 +74,7 @@ function App() {
         identificacion: decoded.identificacion,
         correo: decoded.correo,
         rol: decoded.rol,
-        estado:decoded.estado
+        estado: decoded.estado,
       });
     }
   }, [authToken]);
@@ -97,6 +98,11 @@ function App() {
                   path="/proyectos/:idProyecto"
                   element={<PageProyecto />}
                 />
+                <Route
+                  path="/proyectos/mis-proyectos:idLider"
+                  element={<ProyectosLider />}
+                />
+
                 <Route path="/proyectos/nuevo" element={<NuevoProyecto />} />
                 <Route path="/inscripciones" element={<IndexInscripciones />} />
               </Route>

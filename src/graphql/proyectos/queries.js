@@ -58,4 +58,19 @@ const PROYECTO = gql`
     }
   }
 `;
-export { PROYECTOS, PROYECTO };
+
+const PROYECTOS_LIDER = gql`
+  query ProyectosLider($lider: String!) {
+    ProyectosLider(lider: $lider) {
+      _id
+      nombre
+      estado
+      lider {
+        _id
+        nombre
+        apellido
+      }
+    }
+  }
+`;
+export { PROYECTOS, PROYECTO, PROYECTOS_LIDER };

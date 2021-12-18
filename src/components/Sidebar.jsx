@@ -9,11 +9,12 @@ const SidebarLinks = () => {
     <ul className="mt-12 ">
       <SidebarRoute to="" title="Inicio" icon="fas fa-home" />
       <PrivateSidebar stateList={["AUTORIZADO"]}>
-        
-        <PrivateComponent roleList={["LIDER", "ESTUDIANTE"]}>
+        <PrivateComponent roleList={["LIDER", "ESTUDIANTE", "ADMINISTRADOR"]}>
           <SidebarRoute to="/perfil" title="Perfil" icon="fas fa-user-circle" />
         </PrivateComponent>
-        <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+        <PrivateComponent
+          roleList={["ADMINISTRADOR", "LIDER", "ADMINISTRADOR"]}
+        >
           <SidebarRoute to="/usuarios" title="Usuarios" icon="fas fa-user" />
         </PrivateComponent>
         <SidebarRoute
@@ -28,7 +29,7 @@ const SidebarLinks = () => {
             icon="fas fa-user"
           />
         </PrivateComponent>
-        </PrivateSidebar>
+      </PrivateSidebar>
 
       <Logout />
     </ul>
@@ -57,7 +58,9 @@ const Logo = () => {
   return (
     <div className="py-3 w-full flex flex-col items-center justify-center">
       <img src="logo.png" alt="Logo" className="h-16" />
-      <span className="my-2 text-xl font-bold text-center text-white">Skill Project</span>
+      <span className="my-2 text-xl font-bold text-center text-white">
+        Skill Project
+      </span>
     </div>
   );
 };

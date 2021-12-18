@@ -12,28 +12,36 @@ import { Link } from "react-router-dom";
 import { CREAR_INSCRIPCION } from "graphql/inscripciones/mutaciones";
 import { useUser } from "context/userContext";
 import { toast } from "react-toastify";
-
 const IndexProyectos = () => {
   const { data: queryData, loading, error } = useQuery(PROYECTOS);
-
+  const { userData } = useUser();
   useEffect(() => {
     console.log("datos proyecto", queryData);
   }, [queryData]);
 
   if (loading) return <div>Cargando...</div>;
 
-  if (queryData.Proyectos) {
+  if (queryData.Proyectos && userData.estado === "AUTORIZADO") {
     return (
       <div className="p-10 flex flex-col justify-center">
-        {/* crear nuevo proyecto */}
-        <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
-          <div className="my-2 self-end">
-            <button className="bg-indigo-500 text-gray-50 p-2 rounded-lg shadow-lg hover:bg-indigo-400">
-              <Link to="/proyectos/nuevo">Crear nuevo proyecto</Link>
-            </button>
-          </div>
-        </PrivateComponent>
-        {/* fin crear nuevo proyecto */}
+        <div className="border-b border-gray-800">
+          <PrivateComponent roleList={["LIDER", "ADMINISTRADOR"]}>
+            <div className="">
+              <button className="bg-indigo-500 text-gray-50 p-2 rounded-lg shadow-lg hover:bg-indigo-400">
+                <Link to={`/proyectos/${userData._id}`} />
+              </button>
+            </div>
+          </PrivateComponent>
+          {/* crear nuevo proyecto */}
+          <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+            <div className="my-2 self-end">
+              <button className="bg-indigo-500 text-gray-50 p-2 rounded-lg shadow-lg hover:bg-indigo-400">
+                <Link to="/proyectos/nuevo">Crear nuevo proyecto</Link>
+              </button>
+            </div>
+          </PrivateComponent>
+          {/* fin crear nuevo proyecto */}
+        </div>
 
         <div className="grid lg:grid-cols-2 gap-4">
           {queryData.Proyectos.map((proyecto) => {
@@ -50,58 +58,58 @@ const IndexProyectos = () => {
 const AccordionProyecto = ({ proyecto }) => {
   const [showDialog, setShowDialog] = useState(false);
   return (
-    <div className="shadow rounded-xl relative justify-center px-6 py-6 bg-gray-200 text-gray-900">
-      <div className="flex w-full ">
-        <h2 className="uppercase font-bold font-20 ">
-          <Link to={`/proyectos/${proyecto._id}`}>{proyecto.nombre}</Link>
-        </h2>
-      </div>
-      <div>
-        <p>
-          Liderado Por: {proyecto.lider.nombre} {proyecto.lider.apellido}
-        </p>
-      </div>
-
-      <div className="flex flex-col md:absolute md:right-12 md:top-12">
-        <div className="">
-          {proyecto.estado}
-          {proyecto.estado === "INACTIVO" ? (
-            <i className="fas fa-circle px-3 text-red-600" />
-          ) : (
-            <i className="fas fa-circle px-3 text-green-500" />
-          )}
+    <Link to={`/proyectos/${proyecto._id}`}>
+      <div className="shadow rounded-xl relative justify-center px-6 py-6 bg-gray-200 text-gray-900">
+        <div className="flex w-full ">
+          <h2 className="uppercase font-bold font-20 ">{proyecto.nombre}</h2>
         </div>
-      </div>
-      {/* editar */}
-      <div className="absolute right-0 top-3">
-        <PrivateComponent roleList={["ADMINISTRADOR"]}>
-          <i
-            className="mx-4 fas fa-pen text-yellow-600 hover:text-yellow-400"
-            onClick={() => {
-              setShowDialog(true);
-            }}
+        <div>
+          <p>
+            Liderado Por: {proyecto.lider.nombre} {proyecto.lider.apellido}
+          </p>
+          <div className="flex flex-col md:absolute md:right-12 md:top-12">
+            <div className="">
+              {proyecto.estado}
+              {proyecto.estado === "INACTIVO" ? (
+                <i className="fas fa-circle px-3 text-red-600" />
+              ) : (
+                <i className="fas fa-circle px-3 text-green-500" />
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* editar */}
+        <div className="absolute right-0 top-3">
+          <PrivateComponent roleList={["ADMINISTRADOR"]}>
+            <i
+              className="mx-4 fas fa-pen text-yellow-600 hover:text-yellow-400"
+              onClick={() => {
+                setShowDialog(true);
+              }}
+            />
+          </PrivateComponent>
+        </div>
+        {/* inscribirse */}
+
+        <PrivateComponent roleList={["ESTUDIANTE"]}>
+          <InscripcionProyecto
+            idProyecto={proyecto._id}
+            estado={proyecto.estado}
+            inscripciones={proyecto.inscripciones}
           />
         </PrivateComponent>
+
+        <Dialog
+          open={showDialog}
+          onClose={() => {
+            setShowDialog(false);
+          }}
+        >
+          <FormEditProyecto _id={proyecto._id} />
+        </Dialog>
       </div>
-      {/* inscribirse */}
-
-      <PrivateComponent roleList={["ESTUDIANTE"]}>
-        <InscripcionProyecto
-          idProyecto={proyecto._id}
-          estado={proyecto.estado}
-          inscripciones={proyecto.inscripciones}
-        />
-      </PrivateComponent>
-
-      <Dialog
-        open={showDialog}
-        onClose={() => {
-          setShowDialog(false);
-        }}
-      >
-        <FormEditProyecto _id={proyecto._id} />
-      </Dialog>
-    </div>
+    </Link>
   );
 };
 
