@@ -9,6 +9,7 @@ import ButtonLoading from "components/ButtonLoading";
 import PrivateComponent from "components/PrivateComponent";
 import { EDITAR_PROYECTO } from "graphql/proyectos/mutations";
 import { EDITAR_OBJETIVO } from "graphql/proyectos/mutations";
+import { CREAR_OBJETIVO } from "graphql/proyectos/mutations";
 import DropDown from "components/Dropdown";
 import Input from "components/Input";
 import useFormData from "hooks/useFormData";
@@ -18,16 +19,16 @@ import { AccordionStyled } from "components/Accordion";
 import { AccordionSummaryStyled } from "components/Accordion";
 import { AccordionDetailsStyled } from "components/Accordion";
 import { Enum_TipoObjetivos } from "utils/enums";
-import { EDITAR_OBSERVACIONES } from 'graphql/avances/mutations';
-import { CREAR_AVANCE } from 'graphql/avances/mutations';
-import { Dialog } from '@mui/material';
-import { PROYECTOS } from "graphql/proyectos/queries";
-
+import { ELIMINAR_OBJETIVO } from "graphql/proyectos/mutations";
+import { nanoid } from "nanoid";
+import { CREAR_AVANCE } from "graphql/proyectos/mutations";
+import { EDITAR_DESCRIPCION } from "graphql/proyectos/mutations";
+import { EDITAR_OBSERVACIONES } from "graphql/proyectos/mutations";
+import { CustomTooltip } from "components/ToolTip";
 
 const Proyecto = () => {
   const { idProyecto } = useParams();
   const { userData } = useUser();
-  const [openDialog, setOpenDialog] = useState(false);
   const { form, formData, updateFormData } = useFormData();
   const [mostrarInputs, setMostrarInputs] = useState(false);
   const [
@@ -69,7 +70,7 @@ const Proyecto = () => {
   }, [queryData, userData]);
 
   if (loading) return <div>Cargando...</div>;
-
+  // validacion de estado desde el token
   if (
     queryData.Proyecto &&
     userData.estado !== "PENDIENTE" &&
@@ -149,14 +150,16 @@ const Proyecto = () => {
             </>
           ) : (
             <div className="">
-              <div className="absolute md:right-20 md:top-20">
-                <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
-                  <i
-                    className="mx-4 fas fa-pen text-yellow-600 hover:text-yellow-400"
-                    onClick={() => setMostrarInputs(!mostrarInputs)}
-                  />
-                </PrivateComponent>
-              </div>
+              <CustomTooltip title="Editar Proyecto">
+                <div className="absolute md:right-20 md:top-20">
+                  <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+                    <i
+                      className="mx-4 fas fa-pen text-yellow-600 hover:text-yellow-400"
+                      onClick={() => setMostrarInputs(!mostrarInputs)}
+                    />
+                  </PrivateComponent>
+                </div>
+              </CustomTooltip>
               <div className="flex items-center justify-between ">
                 <h2 className="font-24 text-white font-bold">
                   {queryData.Proyecto.nombre}
@@ -198,14 +201,20 @@ const Proyecto = () => {
                 <h2>Objetivos</h2>
               </AccordionSummaryStyled>
               <AccordionDetailsStyled>
+                <CustomTooltip title="Crear Objetivo">
+                  <div className="">
+                    <CrearObjetivo idProyecto={queryData.Proyecto._id} />
+                  </div>
+                </CustomTooltip>
                 {queryData.Proyecto.objetivos.length > 0 ? (
                   queryData.Proyecto.objetivos.map((objetivo) => {
                     return (
                       <Objetivo
-                        key={objetivo._id}
+                        key={nanoid()}
                         tipo={objetivo.tipo}
                         descripcion={objetivo.descripcion}
                         idProyecto={queryData.Proyecto._id}
+                        idObjetivo={objetivo._id}
                         indexObjetivo={queryData.Proyecto.objetivos.indexOf(
                           objetivo
                         )}
@@ -222,31 +231,32 @@ const Proyecto = () => {
             <AccordionStyled>
               <AccordionSummaryStyled>
                 <h2>Avances</h2>
-                <PrivateComponent roleList={["ESTUDIANTE"]}>
-                  <div className="flex mx-2">
-                    <button
-                      onClick={() => setOpenDialog(true)}
-                      className='fas fa-book text-green-300 hover:text-blue-800 cursor-pointer'
-                      type='button'
-                              >                                
-                    </button>
-                    <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-                      <CrearAvance proyecto={idProyecto} setOpenDialog={setOpenDialog} />
-                                 
-                    </Dialog>
-                  </div>
-                </PrivateComponent>
               </AccordionSummaryStyled>
               <AccordionDetailsStyled>
+                <CustomTooltip title="Crear Avance">
+                  <div className="">
+                    <CrearAvance
+                      creadoPor={userData._id}
+                      idProyecto={queryData.Proyecto._id}
+                    />
+                  </div>
+                </CustomTooltip>
                 {queryData.Proyecto.avances.length > 0 ? (
                   queryData.Proyecto.avances.map((avance) => {
                     return (
                       <Avance
-                        key={avance._id}
+                        key={nanoid()}
+                        idAvance={avance._id}
                         fecha={avance.fecha.slice(0, -14)}
-                        descripcion={avance.descripcion}
                         observaciones={avance.observaciones}
-                        creadoPor={avance.creadoPor.nombre}
+                        descripcion={avance.descripcion}
+                        creadoPor={
+                          avance.creadoPor.nombre +
+                          " " +
+                          avance.creadoPor.apellido
+                        }
+                        userData={userData._id}
+                        idUsuario={avance.creadoPor._id}
                       />
                     );
                   })
@@ -269,7 +279,13 @@ const Proyecto = () => {
     </>
   );
 };
-const Objetivo = ({ tipo, descripcion, idProyecto, indexObjetivo }) => {
+const Objetivo = ({
+  tipo,
+  descripcion,
+  idProyecto,
+  indexObjetivo,
+  idObjetivo,
+}) => {
   const { form, formData, updateFormData } = useFormData();
   const [editar, setEditar] = useState(false);
   const [editarObjetivo, { data: dataMutation, loading, error }] =
@@ -293,29 +309,33 @@ const Objetivo = ({ tipo, descripcion, idProyecto, indexObjetivo }) => {
     <div className="mx-5 relative text-black my-4 bg-gray-50 p-8 rounded-lg flex flex-col shadow-xl">
       {editar ? (
         <>
-          <div className="absolute right-14 md:right-5 md:top-5">
-            <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
-              <i
-                className="mx-4 fas fa-times text-red-600 hover:text-red-700"
-                onClick={() => setEditar(!editar)}
-              />
-            </PrivateComponent>
-          </div>
+          <CustomTooltip title="Cerrar">
+            <div className="absolute right-14 md:right-5 md:top-5">
+              <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+                <i
+                  className="mx-4 fas fa-times text-red-600 hover:text-red-700"
+                  onClick={() => setEditar(!editar)}
+                />
+              </PrivateComponent>
+            </div>
+          </CustomTooltip>
+
           <form
             ref={form}
             onChange={updateFormData}
             onSubmit={submitForm}
             className="flex flex-col items-center"
           >
-            <div className="font-bold text-lg">Descripcion Objetivo:</div>
             <Input
+              label="Descripcion Objetivo"
               type="text"
               name="descripcion"
               defaultValue={descripcion}
               required={true}
             />
-            <div className="font-bold text-lg">Tipo Objetivo:</div>
+
             <DropDown
+              label="Tipo Objetivo"
               name="tipo"
               options={Enum_TipoObjetivos}
               defaultValue={tipo}
@@ -331,12 +351,95 @@ const Objetivo = ({ tipo, descripcion, idProyecto, indexObjetivo }) => {
         <>
           <div className="text-lg font-bold">{tipo}</div>
           <div>{descripcion}</div>
+          <CustomTooltip title="Editar Objetivo">
+            <div className="absolute md:right-5 md:top-5">
+              <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+                <i
+                  className="mx-4 fas fa-pen text-yellow-600 hover:text-yellow-400"
+                  onClick={() => setEditar(!editar)}
+                />
+              </PrivateComponent>
+            </div>
+          </CustomTooltip>
 
+          <CustomTooltip title="Eliminar Objetivo">
+            <EliminarObjetivo
+              key={nanoid()}
+              idObjetivo={idObjetivo}
+              idProyecto={idProyecto}
+            />
+          </CustomTooltip>
+        </>
+      )}
+    </div>
+  );
+};
+const CrearObjetivo = ({ idProyecto }) => {
+  const { form, formData, updateFormData } = useFormData();
+  const [crearObjetivo, { data: dataMutation, loading, error }] =
+    useMutation(CREAR_OBJETIVO);
+  const [mostrar, setMostrar] = useState(false);
+  const submitForm = (e) => {
+    e.preventDefault();
+    crearObjetivo({
+      variables: {
+        idProyecto: idProyecto,
+        campos: formData,
+      },
+    });
+    crearObjetivo
+      ? toast.success("Objetivo creado con exito")
+      : toast.error("Ups algo salio mal, no se pudo crear el objetivo");
+  };
+  useEffect(() => {
+    console.log("data mutation", dataMutation);
+  }, [dataMutation]);
+  return (
+    <div className="">
+      {mostrar ? (
+        <>
+          <CustomTooltip title="Cerrar">
+            <div className="absolute md:right-5 md:top-5">
+              <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+                <i
+                  className="mx-4 fas fa-times text-red-600 hover:text-red-400"
+                  onClick={() => setMostrar(!mostrar)}
+                />
+              </PrivateComponent>
+            </div>
+          </CustomTooltip>
+          <form
+            ref={form}
+            onChange={updateFormData}
+            onSubmit={submitForm}
+            className="flex flex-col items-center"
+          >
+            <Input
+              label="Descripcion Objetivo"
+              type="text"
+              name="descripcion"
+              required={true}
+            />
+
+            <DropDown
+              label="Tipo Objetivo"
+              name="tipo"
+              options={Enum_TipoObjetivos}
+            />
+            <ButtonLoading
+              disabled={false}
+              loading={loading}
+              text="Confirmar"
+            />
+          </form>
+        </>
+      ) : (
+        <>
           <div className="absolute md:right-5 md:top-5">
             <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
               <i
-                className="mx-4 fas fa-pen text-yellow-600 hover:text-yellow-400"
-                onClick={() => setEditar(!editar)}
+                className="mx-4 fas fa-plus text-green-600 hover:text-green-400"
+                onClick={() => setMostrar(!mostrar)}
               />
             </PrivateComponent>
           </div>
@@ -345,75 +448,245 @@ const Objetivo = ({ tipo, descripcion, idProyecto, indexObjetivo }) => {
     </div>
   );
 };
+const EliminarObjetivo = ({ idProyecto, idObjetivo }) => {
+  const [eliminarObjetivo, { data: dataMutation, loading, error }] =
+    useMutation(ELIMINAR_OBJETIVO, {
+      variables: {
+        idProyecto: idProyecto,
+        idObjetivo: idObjetivo,
+      },
+    });
 
-const CrearAvance = ({ proyecto, setOpenDialog }) => {
-  const { userData } = useUser();
+  return (
+    <div className="absolute right-14 md:right-10 md:top-8 cursor-pointer">
+      <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+        <i
+          className="mx-4 fas fa-minus text-red-600 hover:text-red-700"
+          onClick={() => eliminarObjetivo()}
+        />
+      </PrivateComponent>
+    </div>
+  );
+};
+const Avance = ({
+  fecha,
+  observaciones,
+  creadoPor,
+  descripcion,
+  userData,
+  idUsuario,
+  idAvance,
+}) => {
+  const [editarObs, setEditarObs] = useState(false);
+  const [editarDesc, setEditarDesc] = useState(false);
   const { form, formData, updateFormData } = useFormData();
 
-  const [crearAvance, { loading }] = useMutation(CREAR_AVANCE, {
-    refetchQueries: [PROYECTOS],
-  });
-
+  const [
+    editarDescripcion,
+    { data: dataMutationEit, lo: loadingEdit, err: errorEdit },
+  ] = useMutation(EDITAR_DESCRIPCION);
+  const [
+    editarObservaciones,
+    { data: dataMutationObs, lo: loadingObs, err: errorObs },
+  ] = useMutation(EDITAR_OBSERVACIONES);
   const submitForm = (e) => {
     e.preventDefault();
-
-    crearAvance({
-      variables: { ...formData, proyecto, creadoPor: userData._id },
-    })
-      .then(() => {
-        toast.success('avance creado con exito');
-        setOpenDialog(false);
-      })
-      .catch(() => {
-        toast.error('error creando el avance');
-      });
+    editarDescripcion({
+      variables: {
+        _id: idAvance,
+        descripcion: formData.descripcion,
+      },
+    });
+    editarDescripcion
+      ? toast.success("Descripcion editada con exito")
+      : toast.error("Ups algo salio mal, no se pudo editar la descripcion");
   };
+
+  const submitForm2 = (e) => {
+    e.preventDefault();
+    editarObservaciones({
+      variables: {
+        _id: idAvance,
+        observaciones: formData.observaciones,
+      },
+    });
+    editarObservaciones
+      ? toast.success("Observacion editada con exito")
+      : toast.error("Ups algo salio mal, no se pudo editar la observacion");
+  };
+  useEffect(() => {
+    console.log("data mutation editar descripcion", dataMutationEit);
+  }, [dataMutationEit]);
+  useEffect(() => {
+    console.log("data mutation editar descripcion", dataMutationObs);
+  }, [dataMutationObs]);
+
   return (
-    <div className='p-4'>
-      <h1 className='text-2xl font-bold text-gray-900'>Crear Nuevo Avance </h1>
-      <form ref={form} onChange={updateFormData} onSubmit={submitForm}>
-        <Input name='descripcion' label='Descripción' type='text' />
-        <Input name='fecha' label='Fecha' type='date' />
-        <ButtonLoading
-          text='Crear Avance'
-          loading={loading}
-          disabled={Object.keys(formData).length === 0}
-        />
-      </form>
+    <div className="mx-5 relative text-black my-4 bg-gray-50 p-8 rounded-lg flex flex-col shadow-xl">
+      {editarDesc ? (
+        <>
+          <CustomTooltip title="Cerrar">
+            <div className="absolute md:right-5 md:top-5">
+              <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+                <i
+                  className="mx-4 fas fa-times text-red-600 hover:text-red-400"
+                  onClick={() => setEditarDesc(!editarDesc)}
+                />
+              </PrivateComponent>
+            </div>
+          </CustomTooltip>
+
+          <form
+            ref={form}
+            onChange={updateFormData}
+            onSubmit={submitForm}
+            className="flex flex-col items-center text-black"
+          >
+            <h2>Edicion de Descripción</h2>
+            <Input
+              className="text-black"
+              label="Descripcion Avance"
+              type="text"
+              name="descripcion"
+              defaultValue={descripcion}
+              required={true}
+            />
+
+            <ButtonLoading
+              disabled={false}
+              loading={loadingEdit}
+              text="Confirmar"
+            />
+          </form>
+        </>
+      ) : (
+        <>
+          <div className="text-lg font-bold">{fecha}</div>
+          {/* observaciones */}
+          <div>{observaciones}</div>
+          {/* descripcion */}
+          <>
+            <div className="">
+              {userData === idUsuario ? (
+                <CustomTooltip title="Ediar Descripción">
+                  <div className="absolute md:right-10 md:top-10">
+                    <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+                      <i
+                        className="mx-4 fas fa-pen text-yellow-600 hover:text-yellow-400"
+                        onClick={() => setEditarDesc(!editarDesc)}
+                      />
+                    </PrivateComponent>
+                  </div>
+                </CustomTooltip>
+              ) : (
+                ""
+              )}
+
+              <div className="">{descripcion}</div>
+            </div>
+          </>
+
+          <div>{creadoPor}</div>
+        </>
+      )}
+      {editarObs ? (
+        <>
+          <CustomTooltip title="Cerrar">
+            <div className="absolute md:right-5 md:top-5">
+              <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+                <i
+                  className="mx-4 fas fa-times text-red-600 hover:text-red-400"
+                  onClick={() => setEditarObs(!editarObs)}
+                />
+              </PrivateComponent>
+            </div>
+          </CustomTooltip>
+
+          <form
+            ref={form}
+            onChange={updateFormData}
+            onSubmit={submitForm2}
+            className="flex flex-col items-center text-black"
+          >
+            <h2>Agregar Observación</h2>
+            <Input
+              className="text-black"
+              label="Descripcion Avance"
+              type="text"
+              name="observaciones"
+              defaultValue={observaciones}
+              required={true}
+            />
+
+            <ButtonLoading
+              disabled={false}
+              loading={loadingEdit}
+              text="Confirmar"
+            />
+          </form>
+        </>
+      ) : (
+        <>
+          <CustomTooltip title="Crear o Editar Observación">
+            <div className="absolute md:right-5 md:top-5">
+              <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+                <i
+                  className="mx-4 fas fa-pen text-yellow-600 hover:text-yellow-400"
+                  onClick={() => setEditarObs(!editarObs)}
+                />
+              </PrivateComponent>
+            </div>
+          </CustomTooltip>
+        </>
+      )}
     </div>
   );
 };
 
-const Avance = ({ _id, fecha, descripcion, observaciones, creadoPor }) => {
+const CrearAvance = ({ idProyecto, creadoPor }) => {
+  const [mostrar, setMostrar] = useState(false);
   const { form, formData, updateFormData } = useFormData();
-  const [editar, setEditar] = useState(false);
-  const [editarObservaciones, { data: dataMutation, loading, error }] =
-    useMutation(EDITAR_OBSERVACIONES);
-    const submitForm = (e) => {
-      e.preventDefault();
-      editarObservaciones({
-        variables: {
-          _id,
-          descripcion: descripcion,
-          observaciones: observaciones,
-          campos: formData,
-        },
-      });
-      setEditar(false);
-    };
+  const [crearAvance, { data: dataMutation, loading, error }] =
+    useMutation(CREAR_AVANCE);
+  const {
+    data: queryData,
+    loadingP,
+    errorP,
+  } = useQuery(PROYECTO, {
+    variables: { _id: idProyecto },
+  });
+  const submitForm = (e) => {
+    e.preventDefault();
+    crearAvance({
+      variables: {
+        proyecto: idProyecto,
+        creadoPor: creadoPor,
+        descripcion: formData.descripcion,
+        fecha: formData.fecha,
+      },
+    });
+    crearAvance
+      ? toast.success("Objetivo creado con exito")
+      : toast.error("Ups algo salio mal, no se pudo crear el objetivo");
+  };
+
   useEffect(() => {
-    console.log("data mutation", dataMutation);
+    crearAvance ?? console.log(queryData);
+  }, [crearAvance, queryData]);
+
+  useEffect(() => {
+    console.log("data mutation crear Avance", dataMutation);
   }, [dataMutation]);
 
   return (
-      <div className="mx-5 relative text-black my-4 bg-gray-50 p-8 rounded-lg flex flex-col shadow-xl">
-       {editar ? (
+    <div className="">
+      {mostrar ? (
         <>
-          <div className="absolute right-14 md:right-5 md:top-5">
-            <PrivateComponent roleList={["LIDER"]}>
-            <i
-                className="mx-4 fas fa-times text-red-600 hover:text-red-700"
-                onClick={() => setEditar(!editar)}
+          <div className="absolute md:right-5 md:top-5">
+            <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+              <i
+                className="mx-4 fas fa-times text-red-600 hover:text-red-400"
+                onClick={() => setMostrar(!mostrar)}
               />
             </PrivateComponent>
           </div>
@@ -423,11 +696,16 @@ const Avance = ({ _id, fecha, descripcion, observaciones, creadoPor }) => {
             onSubmit={submitForm}
             className="flex flex-col items-center"
           >
-            <div className="font-bold text-lg">Editar Observaciones:</div>
             <Input
+              label="Descripcion Avance"
               type="text"
-              name="observaciones"
-              defaultValue={observaciones}
+              name="descripcion"
+              required={true}
+            />
+            <Input
+              label="fecha Avance"
+              type="date"
+              name="fecha"
               required={true}
             />
 
@@ -439,30 +717,19 @@ const Avance = ({ _id, fecha, descripcion, observaciones, creadoPor }) => {
           </form>
         </>
       ) : (
-        <>
-          <div className="text-lg font-bold">Fecha: {fecha}</div>
-          <div><span className="font-bold">Descripción: </span> {descripcion} </div>
-          <div><span className="font-bold">Observaciones:  </span>{observaciones}</div>
-          <div><span className="font-bold" >Creado por: </span> {creadoPor} </div>
-          
-          <div className="absolute md:right-5 md:top-5">
-            <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
-              <i
-                className="mx-4 fas fa-pen text-yellow-600 hover:text-yellow-400"
-                onClick={() => setEditar(!editar)}
-              />
-            </PrivateComponent>
-          </div>
-        </>
+        <div className="absolute md:right-5 md:top-5">
+          <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+            <i
+              className="mx-4 fas fa-plus text-green-600 hover:text-green-400"
+              onClick={() => setMostrar(!mostrar)}
+            />
+          </PrivateComponent>
+        </div>
       )}
-      </div>
-      
-    );
-    
+    </div>
+  );
 };
-
-
-  const InscripcionProyecto = ({ idProyecto, estado, inscripciones }) => {
+const InscripcionProyecto = ({ idProyecto, estado, inscripciones }) => {
   const [estadoInscripcion, setEstadoInscripcion] = useState("");
   const [crearInscripcion, { data, loading, error }] =
     useMutation(CREAR_INSCRIPCION);
@@ -497,12 +764,14 @@ const Avance = ({ _id, fecha, descripcion, observaciones, creadoPor }) => {
       {estadoInscripcion !== "" ? (
         <span>{estadoInscripcion}</span>
       ) : (
-        <ButtonLoading
-          onClick={() => confirmarInscripcion()}
-          disabled={estado === "INACTIVO"}
-          loading={loading}
-          text="Inscribirme"
-        />
+        <CustomTooltip title="Inscribirme">
+          <ButtonLoading
+            onClick={() => confirmarInscripcion()}
+            disabled={estado === "INACTIVO"}
+            loading={loading}
+            text="Inscribirme"
+          />
+        </CustomTooltip>
       )}
     </>
   );

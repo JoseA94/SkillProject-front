@@ -2,36 +2,35 @@ import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "context/authContext";
 import PrivateComponent from "./PrivateComponent";
+import PrivateSidebar from "./PrivateSidebar";
 
 const SidebarLinks = () => {
   return (
     <ul className="mt-12 ">
       <SidebarRoute to="" title="Inicio" icon="fas fa-home" />
-      <PrivateComponent roleList={["LIDER", "ESTUDIANTE"]}>
-        <SidebarRoute to="/perfil" title="Perfil" icon="fas fa-user-circle" />
-      </PrivateComponent>
-      <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
-        <SidebarRoute to="/usuarios" title="Usuarios" icon="fas fa-user" />
-      </PrivateComponent>
-      <SidebarRoute
-        to="/proyectos"
-        title="Proyectos"
-        icon="fas fa-smile-wink"
-      />
-      <PrivateComponent roleList={["LIDER"]}>
+      <PrivateSidebar stateList={["AUTORIZADO"]}>
+        <PrivateComponent roleList={["LIDER", "ESTUDIANTE", "ADMINISTRADOR"]}>
+          <SidebarRoute to="/perfil" title="Perfil" icon="fas fa-user-circle" />
+        </PrivateComponent>
+        <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+          <SidebarRoute to="/usuarios" title="Usuarios" icon="fas fa-user" />
+        </PrivateComponent>
         <SidebarRoute
-          to="/inscripciones"
-          title="Aprobacion Inscripciones"
-          icon="fas fa-user"
+          to="/proyectos"
+          title="Proyectos"
+          icon="fas fa-smile-wink"
         />
-      </PrivateComponent>
-      <PrivateComponent roleList={['ESTUDIANTE', 'LIDER']}>
-        <SidebarRoute 
-          to='/avances' 
-          title='Avances' 
-          icon='fas fa-book' 
+        <PrivateComponent roleList={["LIDER", "ADMINISTRADOR"]}>
+          <SidebarRoute
+            to="/inscripciones"
+            title="Aprobacion Inscripciones"
+            icon="fas fa-user"
           />
-      </PrivateComponent>
+        </PrivateComponent>
+        <PrivateComponent roleList={["ESTUDIANTE", "LIDER", "ADMINISTRADOR"]}>
+          <SidebarRoute to="/avances" title="Avances" icon="fas fa-book" />
+        </PrivateComponent>
+      </PrivateSidebar>
       <Logout />
     </ul>
   );
@@ -59,7 +58,9 @@ const Logo = () => {
   return (
     <div className="py-3 w-full flex flex-col items-center justify-center">
       <img src="logo.png" alt="Logo" className="h-16" />
-      <span className="my-2 text-xl font-bold text-center text-white">Skill Project</span>
+      <span className="my-2 text-xl font-bold text-center text-white">
+        Skill Project
+      </span>
     </div>
   );
 };
