@@ -8,8 +8,12 @@ import PrivateRoute from 'components/PrivateRoute';
 import PrivateComponent from "components/PrivateComponent";
 
 const IndexUsuarios = () => {
-  const { data, error, loading } = useQuery(GET_USUARIOS);
+  const { data, error, loading, refetch } = useQuery(GET_USUARIOS);
 
+  useEffect(()=>{
+    refetch();
+  }, [data]);
+  
   useEffect(() => {
     if (error) {
       toast.error('Error consultando los usuarios');
