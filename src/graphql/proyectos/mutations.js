@@ -116,6 +116,7 @@ const EDITAR_OBSERVACIONES = gql`
     }
   }
 `;
+//
 
 export {
   EDITAR_PROYECTO,

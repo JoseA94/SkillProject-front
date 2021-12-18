@@ -1,8 +1,4 @@
 import React from "react";
-import { useUser } from 'context/userContext';
-
-
-
 
 const Index = () => {
   return (
@@ -14,10 +10,10 @@ const Index = () => {
           <h2 className="text-white text-2xl font-bold p-10">Nota importante: </h2>
           <h2 className="text-white text-2xl font-bold p-10">Si no estás autorizado, no tendrás la barra de opciones desplegada en la 
           izquierda, por lo tanto debes contactarte con tu lider de proyecto o en última instancia con los administradores de la aplicación</h2>
-          
-          
+
+
         </div>
-        
+
         </div>
     </div>
   );

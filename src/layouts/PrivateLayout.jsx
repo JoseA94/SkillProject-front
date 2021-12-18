@@ -45,7 +45,7 @@ const PrivateLayout = () => {
           <Outlet />
         </div>
       </div>
-      <ToastContainer position="bottom-center" />
+      <ToastContainer />
     </div>
   );
 };

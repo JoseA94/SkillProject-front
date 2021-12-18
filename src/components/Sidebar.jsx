@@ -12,9 +12,7 @@ const SidebarLinks = () => {
         <PrivateComponent roleList={["LIDER", "ESTUDIANTE", "ADMINISTRADOR"]}>
           <SidebarRoute to="/perfil" title="Perfil" icon="fas fa-user-circle" />
         </PrivateComponent>
-        <PrivateComponent
-          roleList={["ADMINISTRADOR", "LIDER", "ADMINISTRADOR"]}
-        >
+        <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
           <SidebarRoute to="/usuarios" title="Usuarios" icon="fas fa-user" />
         </PrivateComponent>
         <SidebarRoute
@@ -22,15 +20,17 @@ const SidebarLinks = () => {
           title="Proyectos"
           icon="fas fa-smile-wink"
         />
-        <PrivateComponent roleList={["LIDER"]}>
+        <PrivateComponent roleList={["LIDER", "ADMINISTRADOR"]}>
           <SidebarRoute
             to="/inscripciones"
             title="Aprobacion Inscripciones"
             icon="fas fa-user"
           />
         </PrivateComponent>
+        <PrivateComponent roleList={["ESTUDIANTE", "LIDER", "ADMINISTRADOR"]}>
+          <SidebarRoute to="/avances" title="Avances" icon="fas fa-book" />
+        </PrivateComponent>
       </PrivateSidebar>
-
       <Logout />
     </ul>
   );

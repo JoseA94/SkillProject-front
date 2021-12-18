@@ -23,7 +23,7 @@ const EditarUsuario = () => {
   } = useQuery(GET_USUARIO, {
     variables: { _id },
   });
-  console.log("esto es query data", queryData)
+
 
   const [editarUsuario, { data: mutationData, loading: mutationLoading, error: mutationError }] =
     useMutation(EDITAR_USUARIO);
