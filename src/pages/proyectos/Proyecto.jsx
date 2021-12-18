@@ -242,6 +242,10 @@ const Proyecto = () => {
                 <h2>Avances</h2>
               </AccordionSummaryStyled>
               <AccordionDetailsStyled>
+                {/* {userData._id ===
+                queryData.Proyecto.inscripciones.estudiante._id
+                  ? "usuario encontrado"
+                  : " no pude"} */}
                 <div className="">
                   <CrearAvance
                     creadoPor={userData._id}
@@ -264,6 +268,7 @@ const Proyecto = () => {
                         }
                         userData={userData._id}
                         idUsuario={avance.creadoPor._id}
+                        lider={queryData.Proyecto.lider._id}
                       />
                     );
                   })
@@ -484,6 +489,7 @@ const Avance = ({
   userData,
   idUsuario,
   idAvance,
+  lider,
 }) => {
   const [editarObs, setEditarObs] = useState(false);
   const [editarDesc, setEditarDesc] = useState(false);
@@ -623,14 +629,18 @@ const Avance = ({
         </>
       ) : (
         <>
-          <div className="absolute md:right-5 md:top-5">
-            <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
-              <i
-                className="mx-4 fas fa-pen text-yellow-600 hover:text-yellow-400"
-                onClick={() => setEditarObs(!editarObs)}
-              />
-            </PrivateComponent>
-          </div>
+          {userData === lider ? (
+            <div className="absolute md:right-5 md:top-5">
+              <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+                <i
+                  className="mx-4 fas fa-pen text-yellow-600 hover:text-yellow-400"
+                  onClick={() => setEditarObs(!editarObs)}
+                />
+              </PrivateComponent>
+            </div>
+          ) : (
+            ""
+          )}
         </>
       )}
     </div>
@@ -677,7 +687,7 @@ const CrearAvance = ({ idProyecto, creadoPor }) => {
       {mostrar ? (
         <>
           <div className="absolute md:right-5 md:top-5">
-            <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+            <PrivateComponent roleList={["ESTUDIANTE"]}>
               <i
                 className="mx-4 fas fa-times text-red-600 hover:text-red-400"
                 onClick={() => setMostrar(!mostrar)}
@@ -712,7 +722,7 @@ const CrearAvance = ({ idProyecto, creadoPor }) => {
         </>
       ) : (
         <div className="absolute md:right-5 md:top-5">
-          <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+          <PrivateComponent roleList={["ESTUDIANTE"]}>
             <i
               className="mx-4 fas fa-plus text-green-600 hover:text-green-400"
               onClick={() => setMostrar(!mostrar)}
