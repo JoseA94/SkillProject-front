@@ -25,8 +25,8 @@ const IndexProyectos = () => {
   if (queryData.Proyectos && userData.estado === "AUTORIZADO") {
     return (
       <>
-        <div className="w-full border-b border-gray-200 flex items-center justify-end p-2">
-          <PrivateComponent roleList={["LIDER", "ADMINISTRADOR"]}>
+        <PrivateComponent roleList={["LIDER", "ADMINISTRADOR"]}>
+          <div className="w-full border-b border-gray-200 flex items-center justify-end p-2">
             <div className="">
               <button className="bg-indigo-500 text-gray-50 p-2 rounded-lg shadow-lg hover:bg-indigo-400">
                 <Link to={`/proyectos/mis-proyectos/${userData._id}`}>
@@ -34,17 +34,16 @@ const IndexProyectos = () => {
                 </Link>
               </button>
             </div>
-          </PrivateComponent>
-          {/* crear nuevo proyecto */}
-          <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+            {/* crear nuevo proyecto */}
             <div className="mx-3">
               <button className="bg-indigo-500 text-gray-50 p-2 rounded-lg shadow-lg hover:bg-indigo-400">
                 <Link to="/proyectos/nuevo">Crear nuevo proyecto</Link>
               </button>
             </div>
-          </PrivateComponent>
-          {/* fin crear nuevo proyecto */}
-        </div>
+            {/* fin crear nuevo proyecto */}
+          </div>
+        </PrivateComponent>
+
         <div className="p-10 flex flex-col justify-center">
           <div className="grid lg:grid-cols-2 gap-4">
             {queryData.Proyectos.map((proyecto) => {

@@ -15,14 +15,23 @@ const EDITAR_PROYECTO = gql`
 `;
 
 const CREAR_PROYECTO = gql`
-  mutation CrearProyecto($campos: camposCreacionProyecto) {
-    crearProyecto(campos: $campos) {
+  mutation CrearProyecto(
+    $nombre: String!
+    $presupuesto: Float!
+    $fechaInicio: Date!
+    $fechaFin: Date!
+    $lider: String!
+    $objetivos: [crearObjetivo]
+  ) {
+    crearProyecto(
+      nombre: $nombre
+      presupuesto: $presupuesto
+      fechaInicio: $fechaInicio
+      fechaFin: $fechaFin
+      lider: $lider
+      objetivos: $objetivos
+    ) {
       _id
-      nombre
-      estado
-      lider {
-        _id
-      }
     }
   }
 `;

@@ -14,6 +14,7 @@ const PROYECTOS = gql`
         apellido
       }
       inscripciones {
+        _id
         estado
         estudiante {
           _id
