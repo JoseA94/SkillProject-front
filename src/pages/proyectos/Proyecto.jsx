@@ -71,11 +71,7 @@ const Proyecto = () => {
 
   if (loading) return <div>Cargando...</div>;
   // validacion de estado desde el token
-  if (
-    queryData.Proyecto &&
-    userData.estado !== "PENDIENTE" &&
-    userData.estado !== "NO_AUTORIZADO"
-  )
+  if (queryData.Proyecto)
     return (
       <div className="h-full p-5 md:p-14 relative ">
         <Link to="/proyectos">
@@ -109,11 +105,13 @@ const Proyecto = () => {
                   label="Estado del Proyecto"
                   name="estado"
                   options={Enum_EstadoProyecto}
+                  disabled={true}
                   defaultValue={queryData.Proyecto.estado}
                 />
                 <DropDown
                   label="Fase del Proyecto"
                   name="fase"
+                  disabled={true}
                   options={Enum_FaseProyecto}
                   defaultValue={queryData.Proyecto.fase}
                 />
@@ -122,19 +120,19 @@ const Proyecto = () => {
                   type="number"
                   name="presupuesto"
                   defaultValue={queryData.Proyecto.presupuesto}
-                  required={true}
                 />
                 <Input
                   label="fecha de inicio del Proyecto"
                   type="date"
+                  disabled={true}
                   name="fechaInicio"
                   defaultValue={queryData.Proyecto.fechaInicio.slice(0, -14)}
-                  required={true}
                 />
                 <Input
                   label="fecha de finalizacion del Proyecto"
                   type="date"
                   name="fechaFin"
+                  disabled={true}
                   defaultValue={queryData.Proyecto.fechaFin.slice(0, -14)}
                   required={true}
                 />
@@ -150,16 +148,21 @@ const Proyecto = () => {
             </>
           ) : (
             <div className="">
-              <CustomTooltip title="Editar Proyecto">
-                <div className="absolute md:right-20 md:top-20">
-                  <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
-                    <i
-                      className="mx-4 fas fa-pen text-yellow-600 hover:text-yellow-400"
-                      onClick={() => setMostrarInputs(!mostrarInputs)}
-                    />
-                  </PrivateComponent>
-                </div>
-              </CustomTooltip>
+              {userData._id === queryData.Proyecto.lider._id &&
+              queryData.Proyecto.estado === "ACTIVO" ? (
+                <CustomTooltip title="Editar Proyecto">
+                  <div className="absolute md:right-20 md:top-20">
+                    <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
+                      <i
+                        className="mx-4 fas fa-pen text-yellow-600 hover:text-yellow-400"
+                        onClick={() => setMostrarInputs(!mostrarInputs)}
+                      />
+                    </PrivateComponent>
+                  </div>
+                </CustomTooltip>
+              ) : (
+                ""
+              )}
               <div className="flex items-center justify-between ">
                 <h2 className="font-24 text-white font-bold">
                   {queryData.Proyecto.nombre}
@@ -195,6 +198,8 @@ const Proyecto = () => {
               </div>
             </div>
           )}
+
+          {/* acordeon Objetivos*/}
           <div className="pb-4  w-full">
             <AccordionStyled>
               <AccordionSummaryStyled>
@@ -227,6 +232,7 @@ const Proyecto = () => {
               </AccordionDetailsStyled>
             </AccordionStyled>
           </div>
+          {/* acordeon Avances*/}
           <div className="">
             <AccordionStyled>
               <AccordionSummaryStyled>
@@ -273,8 +279,7 @@ const Proyecto = () => {
   return (
     <>
       <h1 className="text-center text-3xl text-white">
-        hubo un error O.o por favor comunicate con la linea de atencion al
-        cliente: 4444123
+        hubo un error O.o por favor comunicate con un lider o administrador
       </h1>
     </>
   );
@@ -514,12 +519,6 @@ const Avance = ({
       ? toast.success("Observacion editada con exito")
       : toast.error("Ups algo salio mal, no se pudo editar la observacion");
   };
-  useEffect(() => {
-    console.log("data mutation editar descripcion", dataMutationEit);
-  }, [dataMutationEit]);
-  useEffect(() => {
-    console.log("data mutation editar descripcion", dataMutationObs);
-  }, [dataMutationObs]);
 
   return (
     <div className="mx-5 relative text-black my-4 bg-gray-50 p-8 rounded-lg flex flex-col shadow-xl">

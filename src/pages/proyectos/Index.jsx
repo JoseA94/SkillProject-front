@@ -4,6 +4,7 @@ import { PROYECTOS } from "graphql/proyectos/queries";
 import DropDown from "components/Dropdown";
 import { Dialog } from "@mui/material";
 import { Enum_EstadoProyecto } from "utils/enums";
+import { Enum_FaseProyecto } from "utils/enums";
 import ButtonLoading from "components/ButtonLoading";
 import { EDITAR_PROYECTO } from "graphql/proyectos/mutations";
 import useFormData from "hooks/useFormData";
@@ -23,18 +24,20 @@ const IndexProyectos = () => {
 
   if (queryData.Proyectos && userData.estado === "AUTORIZADO") {
     return (
-      <div className="p-10 flex flex-col justify-center">
-        <div className="border-b border-gray-800">
+      <>
+        <div className="w-full border-b border-gray-200 flex items-center justify-end p-2">
           <PrivateComponent roleList={["LIDER", "ADMINISTRADOR"]}>
             <div className="">
               <button className="bg-indigo-500 text-gray-50 p-2 rounded-lg shadow-lg hover:bg-indigo-400">
-                <Link to={`/proyectos/${userData._id}`} />
+                <Link to={`/proyectos/mis-proyectos/${userData._id}`}>
+                  Mis Proyectos
+                </Link>
               </button>
             </div>
           </PrivateComponent>
           {/* crear nuevo proyecto */}
           <PrivateComponent roleList={["ADMINISTRADOR", "LIDER"]}>
-            <div className="my-2 self-end">
+            <div className="mx-3">
               <button className="bg-indigo-500 text-gray-50 p-2 rounded-lg shadow-lg hover:bg-indigo-400">
                 <Link to="/proyectos/nuevo">Crear nuevo proyecto</Link>
               </button>
@@ -42,13 +45,16 @@ const IndexProyectos = () => {
           </PrivateComponent>
           {/* fin crear nuevo proyecto */}
         </div>
-
-        <div className="grid lg:grid-cols-2 gap-4">
-          {queryData.Proyectos.map((proyecto) => {
-            return <AccordionProyecto key={proyecto._id} proyecto={proyecto} />;
-          })}
+        <div className="p-10 flex flex-col justify-center">
+          <div className="grid lg:grid-cols-2 gap-4">
+            {queryData.Proyectos.map((proyecto) => {
+              return (
+                <AccordionProyecto key={proyecto._id} proyecto={proyecto} />
+              );
+            })}
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
@@ -58,8 +64,8 @@ const IndexProyectos = () => {
 const AccordionProyecto = ({ proyecto }) => {
   const [showDialog, setShowDialog] = useState(false);
   return (
-    <Link to={`/proyectos/${proyecto._id}`}>
-      <div className="shadow rounded-xl relative justify-center px-6 py-6 bg-gray-200 text-gray-900">
+    <div className="shadow rounded-xl relative justify-center px-6 py-6 bg-gray-200 text-gray-900">
+      <Link to={`/proyectos/${proyecto._id}`}>
         <div className="flex w-full ">
           <h2 className="uppercase font-bold font-20 ">{proyecto.nombre}</h2>
         </div>
@@ -78,42 +84,46 @@ const AccordionProyecto = ({ proyecto }) => {
             </div>
           </div>
         </div>
+      </Link>
 
-        {/* editar */}
-        <div className="absolute right-0 top-3">
-          <PrivateComponent roleList={["ADMINISTRADOR"]}>
-            <i
-              className="mx-4 fas fa-pen text-yellow-600 hover:text-yellow-400"
-              onClick={() => {
-                setShowDialog(true);
-              }}
-            />
-          </PrivateComponent>
-        </div>
-        {/* inscribirse */}
-
-        <PrivateComponent roleList={["ESTUDIANTE"]}>
-          <InscripcionProyecto
-            idProyecto={proyecto._id}
-            estado={proyecto.estado}
-            inscripciones={proyecto.inscripciones}
+      {/* editar */}
+      <div className="absolute right-0 top-3">
+        <PrivateComponent roleList={["ADMINISTRADOR"]}>
+          <i
+            className="mx-4 fas fa-pen text-yellow-600 hover:text-yellow-400"
+            onClick={() => {
+              setShowDialog(true);
+            }}
           />
         </PrivateComponent>
-
-        <Dialog
-          open={showDialog}
-          onClose={() => {
-            setShowDialog(false);
-          }}
-        >
-          <FormEditProyecto _id={proyecto._id} />
-        </Dialog>
       </div>
-    </Link>
+      {/* inscribirse */}
+
+      <PrivateComponent roleList={["ESTUDIANTE"]}>
+        <InscripcionProyecto
+          idProyecto={proyecto._id}
+          estado={proyecto.estado}
+          inscripciones={proyecto.inscripciones}
+        />
+      </PrivateComponent>
+
+      <Dialog
+        open={showDialog}
+        onClose={() => {
+          setShowDialog(false);
+        }}
+      >
+        <FormEditProyecto
+          _id={proyecto._id}
+          estado={proyecto.estado}
+          fase={proyecto.fase}
+        />
+      </Dialog>
+    </div>
   );
 };
 
-const FormEditProyecto = ({ _id }) => {
+const FormEditProyecto = ({ _id, estado, fase }) => {
   const { form, formData, updateFormData } = useFormData();
   const [editarProyecto, { data: dataMutation, loading, error }] =
     useMutation(EDITAR_PROYECTO);
@@ -145,6 +155,13 @@ const FormEditProyecto = ({ _id }) => {
           label="Estado del Proyecto"
           name="estado"
           options={Enum_EstadoProyecto}
+          defaultValue={estado}
+        />
+        <DropDown
+          label="Estado del Proyecto"
+          name="fase"
+          options={Enum_FaseProyecto}
+          defaultValue={fase}
         />
         <ButtonLoading disabled={false} loading={loading} text="Confirmar" />
       </form>

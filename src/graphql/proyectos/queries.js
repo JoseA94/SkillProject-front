@@ -6,6 +6,7 @@ const PROYECTOS = gql`
       _id
       nombre
       estado
+      fase
       lider {
         _id
         correo
@@ -53,6 +54,12 @@ const PROYECTO = gql`
           nombre
           apellido
           correo
+        }
+      }
+      inscripciones {
+        estado
+        estudiante {
+          _id
         }
       }
     }

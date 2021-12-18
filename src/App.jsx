@@ -103,7 +103,7 @@ function App() {
                   element={<PageProyecto />}
                 />
                 <Route
-                  path="/proyectos/mis-proyectos:idLider"
+                  path="/proyectos/mis-proyectos/:idLider"
                   element={<ProyectosLider />}
                 />
 

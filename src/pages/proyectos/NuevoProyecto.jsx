@@ -28,11 +28,10 @@ const NuevoProyecto = () => {
 
   const submitForm = (e) => {
     e.preventDefault();
-    if (formData.objetivos) {
-      formData.objetivos = Object.values(formData.objetivos);
-    }
-    formData.presupuesto = parseFloat(formData.presupuesto);
 
+    formData.objetivos = Object.values(formData.objetivos);
+    formData.presupuesto = parseFloat(formData.presupuesto);
+    console.log(formData);
     crearProyecto({
       variables: {
         campos: formData,
