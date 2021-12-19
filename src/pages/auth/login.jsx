@@ -7,6 +7,7 @@ import { useMutation } from '@apollo/client';
 import { LOGIN } from 'graphql/auth/mutations';
 import { useAuth } from 'context/authContext';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -29,6 +30,9 @@ const Login = () => {
       if (dataMutation.login.token) {
         setToken(dataMutation.login.token);
         navigate('/');
+      }
+      if(dataMutation.login.error) {
+        toast.error('Usuario o contraseña incorrectos');
       }
     }
   }, [dataMutation, setToken, navigate]);

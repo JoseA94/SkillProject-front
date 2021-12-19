@@ -6,6 +6,7 @@ const PROYECTOS = gql`
       _id
       nombre
       estado
+      fase
       lider {
         _id
         correo
@@ -13,6 +14,7 @@ const PROYECTOS = gql`
         apellido
       }
       inscripciones {
+        _id
         estado
         estudiante {
           _id
@@ -55,7 +57,28 @@ const PROYECTO = gql`
           correo
         }
       }
+      inscripciones {
+        estado
+        estudiante {
+          _id
+        }
+      }
     }
   }
 `;
-export { PROYECTOS, PROYECTO };
+
+const PROYECTOS_LIDER = gql`
+  query ProyectosLider($lider: String!) {
+    ProyectosLider(lider: $lider) {
+      _id
+      nombre
+      estado
+      lider {
+        _id
+        nombre
+        apellido
+      }
+    }
+  }
+`;
+export { PROYECTOS, PROYECTO, PROYECTOS_LIDER };

@@ -14,14 +14,13 @@ const Perfil = () => {
     const { form, formData, updateFormData } = useFormData();
     const { userData, setUserData } = useUser();
 
-    // falta capturar error de mutacion
     const [editarPerfil, { data: dataMutation, loading: loadingMutation }] =
         useMutation(EDITAR_PERFIL);
 
-    // falta capturar error de query
     const {
         data: queryData,
         loading: queryLoading,
+        error: queryError,
         refetch,
     } = useQuery(GET_USUARIO, {
         variables: {
@@ -29,13 +28,24 @@ const Perfil = () => {
         },
     });
 
+    useEffect(()=>{
+        refetch();
+    }, [queryData]);
+
+    useEffect(() => {
+        if (queryError) {
+          toast.error('Error al consultar el perfil del usuario');
+        }
+    }, [queryError]);
+
     useEffect(() => {
         if (dataMutation) {
-        setUserData({ ...userData, foto: dataMutation.editarPerfil.foto });
-        toast.success('Perfil modificado con exito');
-        refetch();
+            setUserData({ ...userData, foto: dataMutation.editarPerfil.foto });
+            toast.success('Perfil modificado con exito');
+            refetch();
         }
     }, [dataMutation]);
+
 
     const submitForm = async (e) => {
         e.preventDefault();
@@ -54,7 +64,7 @@ const Perfil = () => {
 
     return (
         <div className='p-10 flex flex-col items-center justify-center w-full'>
-            <h1 className='font-bold text-2xl text-gray-900'>Perfil del usuario</h1>
+            <h1 className='font-bold text-2xl text-white'>Perfil del usuario</h1>
             <form ref={form} onChange={updateFormData} onSubmit={submitForm}>
                 <Input
                 defaultValue={queryData.Usuario.nombre}
@@ -77,32 +87,33 @@ const Perfil = () => {
                 type='text'
                 required
                 />
+                <span className='text-white'>Rol del usuario: {queryData.Usuario.rol}</span>
                 {queryData.Usuario.foto && !editFoto ? (
-                <div className='flex flex-col items-center'>
-                    <img
-                    className='h-32'
-                    src={queryData.Usuario.foto}
-                    alt='Foto Usuario'
-                    />
-                    <button
-                    type='button'
-                    onClick={() => setEditFoto(true)}
-                    className='bg-indigo-300 p-1 my-2 rounded-md text-white'
-                    >
-                    Cambiar imagen
-                    </button>
-                </div>
+                    <div className='flex flex-col items-center'>
+                        <img
+                        className='h-32'
+                        src={queryData.Usuario.foto}
+                        alt='Foto Usuario'
+                        />
+                        <button
+                        type='button'
+                        onClick={() => setEditFoto(true)}
+                        className='bg-indigo-300 p-1 my-2 rounded-md text-white'
+                        >
+                        Cambiar imagen
+                        </button>
+                    </div>
                 ) : (
-                <div>
-                    <Input label='Foto' name='foto' type='file' required />
-                    <button
-                    type='button'
-                    onClick={() => setEditFoto(false)}
-                    className='bg-indigo-300 p-1 my-2 rounded-md text-white'
-                    >
-                    Cancelar
-                    </button>
-                </div>
+                    <div>
+                        <Input label='Foto' name='foto' type='file' required />
+                        <button
+                        type='button'
+                        onClick={() => setEditFoto(false)}
+                        className='bg-indigo-300 p-1 my-2 rounded-md text-white'
+                        >
+                        Cancelar
+                        </button>
+                    </div>
                 )}
                 <ButtonLoading
                 text='Confirmar'
